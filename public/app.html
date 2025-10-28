@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mmdrza.AI</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: radial-gradient(circle at top left, #01051c, #001b36, #000);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  overflow: hidden; /* ✅ قفل اسکرول کل صفحه */
+}
+
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: repeating-radial-gradient(circle at 20% 20%, #00bfff 1px, transparent 2px);
+      opacity: 0.2;
+      animation: moveStars 60s linear infinite;
+    }
+
+    @keyframes moveStars {
+      from { transform: translateY(0); }
+      to { transform: translateY(-200px); }
+    }
+
+    .navbar {
+      z-index: 5;
+      background: linear-gradient(90deg, rgba(0,64,255,0.4), rgba(0,194,255,0.4));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 25px rgba(0, 195, 255, 0.3);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: white !important;
+      text-shadow: 0 0 20px #00c2ff, 0 0 40px #007bff;
+      animation: brandGlow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes brandGlow {
+      0% { text-shadow: 0 0 15px #00bfff; }
+      100% { text-shadow: 0 0 40px #00ffff; }
+    }
+
+    .sidebar {
+      width: 260px;
+      background: rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      animation: sidebarPulse 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes sidebarPulse {
+      from { box-shadow: inset 0 0 15px rgba(0,191,255,0.1); }
+      to { box-shadow: inset 0 0 35px rgba(0,191,255,0.3); }
+    }
+
+    .sidebar h5 {
+      font-weight: 600;
+      color: #00c2ff;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px #00bfff;
+    }
+
+    .sidebar .btn {
+      border-radius: 12px;
+      text-align: left;
+      margin-bottom: 0.6rem;
+      background: rgba(0,0,30,0.4);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: 0.4s ease;
+    }
+
+    .sidebar .btn:hover {
+      background: linear-gradient(90deg, #0040ff, #00c2ff);
+      color: #fff;
+      box-shadow: 0 0 15px #00bfff;
+      transform: scale(1.02);
+    }
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: visible; /* ✅ دکمه پایین دیده میشه */
+  background: radial-gradient(circle at top, #001030, #000618);
+   height: 100%;
+}
+
+
+
+    .message {
+      padding: 1rem 1.3rem;
+      border-radius: 18px;
+      margin-bottom: 1rem;
+      max-width: 80%;
+      line-height: 1.6;
+      position: relative;
+      animation: fadeIn 0.5s ease;
+    }
+
+  @keyframes aiFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+    .user-message {
+      background: linear-gradient(135deg, #007bff, #00bfff);
+      color: #fff;
+      margin-left: auto;
+      text-align: right;
+      box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+    }
+
+    .ai-message {
+     opacity: 0;
+  transform: translateY(10px);
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #00bfff;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.25);
+  animation: aiFadeIn 0.6s ease forwards, aiGlow 6s infinite alternate ease-in-out;
+    }
+
+    @keyframes aiGlow {
+      from { box-shadow: 0 0 10px rgba(0,191,255,0.3); }
+      to { box-shadow: 0 0 35px rgba(0,191,255,0.6); }
+    }
+
+    .chat-input {
+      padding: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      background: rgba(0, 10, 30, 0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      padding: 0.9rem 1rem;
+      border-radius: 50px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .chat-input input:focus {
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 0 15px #00bfff;
+    }
+
+    .chat-input button {
+      border: none;
+      background: linear-gradient(90deg, #0066ff, #00bfff);
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin-left: 0.8rem;
+      box-shadow: 0 0 15px #00bfff;
+      transition: all 0.3s ease;
+    }
+
+    .chat-input button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px #00ffff;
+    }
+
+    .thinking {
+      display: none;
+      text-align: center;
+      color: #00bfff;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    /* 💠 کانتینر هر پیام با آواتار و حباب */
+.msg-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+  animation: bubbleAppear 0.6s ease both;
+}
+
+@keyframes bubbleAppear {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 🧠 آواتار AI */
+.ai-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #00bfff, #001f4f);
+  box-shadow: 0 0 20px #00bfff99, 0 0 50px #00ffff33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.ai-avatar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, #00ffff22);
+  animation: glowPulse 3s infinite ease-in-out;
+}
+@keyframes glowPulse {
+  0%,100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+/* 👤 آواتار کاربر */
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0066ff, #00bfff);
+  box-shadow: 0 0 15px #00bfff99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* 💬 متن پیام‌ها درون باکس */
+.msg-content {
+  max-width: 75%;
+  padding: 0.9rem 1.2rem;
+  border-radius: 15px;
+  line-height: 1.6;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.15);
+}
+
+/* پیام AI */
+.msg-ai .msg-content {
+  background: rgba(255,255,255,0.07);
+  border-left: 4px solid #00bfff;
+  animation: fadeInMsg 0.5s ease;
+}
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* پیام کاربر */
+.msg-user .msg-content {
+  background: linear-gradient(135deg, #007bff, #00bfff);
+  color: #fff;
+  margin-left: auto;
+  text-align: right;
+  box-shadow: 0 0 15px rgba(0,191,255,0.3);
+}
+
+/* 🔵 وضعیت آنلاین زیر آواتار */
+.status-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #00ff73;
+  border: 2px solid #001530;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  box-shadow: 0 0 8px #00ff73cc;
+}
+/* 🌐 حالت تفکر آواتار */
+.thinking-glow {
+  animation: thinkingPulse 2s infinite ease-in-out;
+}
+
+@keyframes thinkingPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px #00ffff66, 0 0 40px #00bfff33;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 35px #00ffffaa, 0 0 80px #00bfff88;
+    transform: scale(1.07);
+  }
+}
+/* 🎨 اسکرول‌بار نئونی برای چت */
+.chat-messages::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00cfff, #0066ff);
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00ffff55;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00ffff, #0099ff);
+}
+/* 🪐 آواتار ثابت گوشه صفحه */
+/* 🌟 آواتار در نوار بالا سمت راست */
+.floating-avatar-top {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.floating-avatar-top .avatar-glow {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #00cfff, #001b4f);
+  box-shadow: 0 0 20px #00ffffaa, 0 0 50px #00bfff55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: avatarPulse 4s infinite ease-in-out, avatarSpin 20s linear infinite;
+}
+
+.floating-avatar-top .avatar-glow img {
+  width: 38px;
+  height: 38px;
+  filter: drop-shadow(0 0 6px #00ffff99);
+  animation: floatY 3s ease-in-out infinite;
+}
+
+.floating-avatar-top .ai-status {
+  font-size: 0.85rem;
+  color: #00ffb3;
+  text-shadow: 0 0 10px #00ffb3aa;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+}
+
+/* استفاده از انیمیشن‌های قبلی */
+@keyframes avatarPulse {
+  0%, 100% { box-shadow: 0 0 20px #00ffff55, 0 0 50px #00bfff22; transform: scale(1); }
+  50% { box-shadow: 0 0 35px #00ffffaa, 0 0 70px #00bfff66; transform: scale(1.08); }
+}
+
+@keyframes avatarSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+
+.avatar-glow {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #00cfff, #001b4f);
+  box-shadow: 0 0 25px #00ffffaa, 0 0 70px #00bfff44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: avatarPulse 4s infinite ease-in-out, avatarSpin 15s linear infinite;
+}
+
+.avatar-glow img {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 10px #00ffffaa);
+  animation: floatY 3s ease-in-out infinite;
+}
+
+/* 🌟 وضعیت آنلاین */
+.ai-status {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #00ffb3;
+  text-shadow: 0 0 10px #00ffb3aa;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+/* ✨ Scrollbar خفن و نئونی برای چت */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto; /* ✅ فقط این بخش اسکرول میشه */
+  padding: 1.5rem;
+  position: relative;
+  z-index: 2;
+  scroll-behavior: smooth;
+}
+
+
+/* 🌈 استایل اسکرول‌بار کرومی */
+.chat-messages::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00bfff, #007bff);
+  border-radius: 10px;
+  box-shadow: 0 0 8px #00bfff;
+  transition: all 0.3s ease;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00ffff, #00bfff);
+}
+
+/* 📎 نشانه اسکرول پایین صفحه */
+/* 🌌 Scroll Indicator — Nebula Pulse Edition */
+.scroll-indicator {
+  position: fixed; /* مهم‌ترین خط */
+  right: 25px;
+  bottom: 110px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #00ffff, #007bff);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.4s ease;
+  box-shadow:
+    0 0 12px #00bfff,
+    0 0 30px #00ffff33,
+    inset 0 0 20px rgba(0, 191, 255, 0.3);
+  z-index: 9999;
+}
+.scroll-indicator.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+.scroll-indicator.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ✨ پالس ملایم زمانی که پیام جدید داره میاد */
+.scroll-indicator.active {
+  animation: intensePulse 1.2s infinite ease-in-out;
+  box-shadow:
+    0 0 20px #00ffff,
+    0 0 40px #00bfff,
+    inset 0 0 25px rgba(0, 255, 255, 0.6);
+}
+
+/* 💫 افکت لرزش نور */
+@keyframes idlePulse {
+  0%, 100% {
+    box-shadow:
+      0 0 12px #00bfff,
+      0 0 30px #00ffff33,
+      inset 0 0 10px rgba(0, 191, 255, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 25px #00ffff,
+      0 0 50px #00bfff,
+      inset 0 0 20px rgba(0, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes intensePulse {
+  0%, 100% {
+    box-shadow:
+      0 0 25px #00ffff,
+      0 0 60px #00bfff,
+      inset 0 0 20px rgba(0, 255, 255, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 45px #00ffff,
+      0 0 80px #00bfff,
+      inset 0 0 30px rgba(0, 255, 255, 0.9);
+    transform: scale(1.15);
+  }
+}
+
+.chat-container {
+  height: calc(100vh - 70px); /* کسر از navbar */
+  display: flex;
+}
+
+.chat-main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  scroll-behavior: smooth;
+}
+#scrollIndicator {
+  z-index: 999999 !important;
+}
+
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><i class="bi bi-stars me-2"></i>mmdrza.AI</a>
+       <div class="floating-avatar-top">
+      <div class="avatar-glow">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712106.png" alt="AI Avatar">
+      </div>
+      <span class="ai-status">🟢 Online</span>
+    </div>
+    </div>
+  </nav>
+
+  <div class="chat-container d-flex flex-row flex-grow-1">
+    <div class="sidebar">
+      <h5><i class="bi bi-lightning-charge-fill"></i> Tools</h5>
+      <button id="newChatBtn" class="btn w-100"><i class="bi bi-chat-dots"></i> New Chat</button>
+      <button id="settingsBtn" class="btn w-100"><i class="bi bi-gear"></i> Settings</button>
+      <button id="themeBtn" class="btn w-100"><i class="bi bi-sun"></i> Theme</button>
+      <hr class="text-white-50">
+      <button id="clearChatBtn" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Clear Chat</button>
+    </div>
+
+    <div class="chat-main flex-grow-1 d-flex flex-column">
+  <div class="chat-messages" id="chatMessages">
+    <div class="ai-message message">👋 Welcome to <b>mmdrza.AI</b> — your next-gen Nebula Assistant.</div>
+  </div>
+
+  <!-- 🔽 دکمه اسکرول پایین -->
+  <div id="scrollIndicator" class="scroll-indicator">
+    <i class="bi bi-arrow-down-short fs-3"></i>
+  </div>
+
+  <div class="thinking" id="thinking">
+    <i class="bi bi-stars"></i> mmdrza.AI is thinking...
+  </div>
+
+  <div class="chat-input">
+    <input id="userInput" type="text" placeholder="Type your message...">
+    <button id="sendBtn"><i class="bi bi-send-fill"></i></button>
+  </div>
+</div>
+  </div>
+
+  <!-- ⚙️ Settings Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content text-light" style="background: rgba(0,10,30,0.9); border: 1px solid rgba(0,195,255,0.2); box-shadow: 0 0 30px #00cfff;">
+        <div class="modal-header border-0">
+          <h5 class="modal-title"><i class="bi bi-gear-wide-connected me-2"></i> Settings</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Voice Type</label>
+              <select id="voiceSelect" class="form-select bg-dark text-light border-info">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Typing Speed</label>
+              <input id="speedRange" type="range" class="form-range" min="20" max="100" value="40">
+            </div>
+          </div>
+          <div class="form-check mt-4">
+            <input class="form-check-input" type="checkbox" id="voiceToggle" checked>
+            <label class="form-check-label">Enable Voice Output</label>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-info" data-bs-dismiss="modal">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 💫 عناصر اصلی
+  const messages = document.getElementById("chatMessages");
+  const input = document.getElementById("userInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const thinking = document.getElementById("thinking");
+  const aiStatus = document.querySelector(".ai-status");
+
+  const newChatBtn = document.getElementById("newChatBtn");
+  const settingsBtn = document.getElementById("settingsBtn");
+  const themeBtn = document.getElementById("themeBtn");
+  const clearChatBtn = document.getElementById("clearChatBtn");
+  const modal = new bootstrap.Modal(document.getElementById("settingsModal"));
+  let darkMode = true;
+
+  // 🌈 اسکرول نرم
+  function smoothScrollToBottom() {
+    messages.scrollTo({ top: messages.scrollHeight, behavior: "smooth" });
+  }
+
+  // ✨ تفکر AI
+  function showThinking() { thinking.style.display = "block"; }
+  function hideThinking() { thinking.style.display = "none"; }
+
+  // 💬 ساخت پیام جدید
+  function addMessage(content, sender = "user") {
+    const msgWrap = document.createElement("div");
+    msgWrap.className = `msg-bubble msg-${sender} animate__animated animate__fadeInUp`;
+
+    const avatar = document.createElement("div");
+    avatar.className = sender === "ai" ? "ai-avatar" : "user-avatar";
+    avatar.innerHTML = sender === "ai" ? '<i class="bi bi-stars"></i>' : "U";
+
+    if (sender === "ai") {
+      const badge = document.createElement("div");
+      badge.className = "status-badge";
+      avatar.appendChild(badge);
+    }
+
+    const msgContent = document.createElement("div");
+    msgContent.className = "msg-content message";
+    msgContent.innerHTML = content;
+
+    msgWrap.appendChild(avatar);
+    msgWrap.appendChild(msgContent);
+    messages.appendChild(msgWrap);
+    smoothScrollToBottom();
+  }
+
+  // 🚀 رویداد ارسال
+  sendBtn.addEventListener("click", sendMessage);
+  input.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+    addMessage(text, "user");
+    input.value = "";
+    showThinking();
+
+    aiStatus.textContent = "💭 Thinking...";
+    aiStatus.style.color = "#00ffff";
+
+    // حباب پاسخ AI
+    const aiBubble = document.createElement("div");
+    aiBubble.className = "msg-bubble msg-ai animate__animated animate__fadeInUp";
+    aiBubble.innerHTML = `
+      <div class="ai-avatar thinking-avatar">
+        <i class="bi bi-stars"></i>
+        <div class="status-badge"></div>
+      </div>
+      <div class="msg-content">🔄 <b>mmdrza.AI</b> is generating response...</div>
+    `;
+    messages.appendChild(aiBubble);
+    smoothScrollToBottom();
+
+    const avatar = aiBubble.querySelector(".ai-avatar");
+    avatar.classList.add("thinking-glow");
+
+    try {
+      await fetchAIResponse(text, aiBubble);
+      avatar.classList.remove("thinking-glow");
+      aiStatus.textContent = "🟢 Online";
+      aiStatus.style.color = "#00ffb3";
+      hideThinking();
+    } catch (err) {
+      console.error("❌ Fetch Error:", err);
+      aiStatus.textContent = "⚠️ Connection Error";
+      aiStatus.style.color = "#ff4444";
+      hideThinking();
+      addMessage("⚠️ Error connecting to mmdrza.AI", "ai");
+    }
+  }
+
+  // 🌌 استریم پاسخ هوش مصنوعی
+  async function fetchAIResponse(prompt, aiBubble) {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: prompt }),
+    });
+
+    const msgContent = aiBubble.querySelector(".msg-content");
+    msgContent.innerHTML = "";
+
+    if (!response.ok) {
+      msgContent.innerHTML = "⚠️ Server error — mmdrza.AI unavailable.";
+      console.error("❌ Server error:", await response.text());
+      return;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+
+    let buffer = "";
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const segments = buffer.split("\n\n");
+        buffer = segments.pop();
+
+        for (const segment of segments) {
+          if (!segment.startsWith("data:")) continue;
+          const data = segment.replace(/^data:\s*/, "").trim();
+          if (data === "[DONE]") return;
+
+          try {
+            const clean = JSON.parse(data);
+            await typeWriterEffect(msgContent, clean);
+          } catch {
+            await typeWriterEffect(msgContent, data);
+          }
+        }
+      }
+
+      if (buffer.trim() !== "") {
+        await typeWriterEffect(msgContent, buffer.trim());
+      }
+    } catch (err) {
+      console.error("⚠️ Stream error:", err);
+      msgContent.innerHTML += "<br><i>⚠️ Error while receiving stream</i>";
+    }
+  }
+
+  // ✍️ افکت تایپ طبیعی (مثل ChatGPT)
+  async function typeWriterEffect(element, text) {
+    for (let i = 0; i < text.length; i++) {
+      element.innerHTML += text[i]
+        .replace(/\n/g, "<br>")
+        .replace(/\s/g, "&nbsp;");
+      if (i % 5 === 0) smoothScrollToBottom();
+      await new Promise(r => setTimeout(r, 15)); // سرعت تایپ
+    }
+  }
+
+  // ⚙️ کنترل‌های کناری
+  newChatBtn.addEventListener("click", () => {
+    messages.innerHTML = "";
+    addMessage("👋 New conversation started. How can I help you study today?", "ai");
+  });
+
+  settingsBtn.addEventListener("click", () => modal.show());
+
+  themeBtn.addEventListener("click", () => {
+    darkMode = !darkMode;
+    document.body.style.background = darkMode
+      ? "radial-gradient(circle at top left, #01051c, #001b36, #000)"
+      : "linear-gradient(to bottom right, #e0f7ff, #ffffff)";
+    document.body.style.color = darkMode ? "white" : "#111";
+    themeBtn.innerHTML = darkMode
+      ? '<i class="bi bi-sun"></i> Light Mode'
+      : '<i class="bi bi-moon-stars"></i> Dark Mode';
+  });
+
+  clearChatBtn.addEventListener("click", () => {
+    messages.classList.add("animate__animated", "animate__fadeOut");
+    setTimeout(() => {
+      messages.innerHTML = "";
+      messages.classList.remove("animate__fadeOut");
+      addMessage("💫 Chat cleared successfully.", "ai");
+    }, 400);
+  });
+    // 🚀 کنترل اسکرول خودکار و دکمه پایین صفحه
+  // 🚀 کنترل هوشمند اسکرول با انیمیشن و پالس
+// 🚀 کنترل اسکرول هوشمند و دکمه پایین صفحه
+function smoothScrollToBottom() {
+  const scrollTarget = document.querySelector(".chat-messages");
+  scrollTarget.scrollTo({
+    top: scrollTarget.scrollHeight,
+    behavior: "smooth",
+  });
+}
+
+const scrollIndicator = document.getElementById("scrollIndicator");
+let autoScroll = true;
+
+// فقط بخش چت باید اسکرول‌پذیر باشه
+const scrollTarget = document.querySelector(".chat-messages");
+
+// هر بار که کاربر اسکرول می‌کند:
+scrollTarget.addEventListener("scroll", () => {
+  const nearBottom =
+    scrollTarget.scrollHeight - scrollTarget.scrollTop - scrollTarget.clientHeight < 100;
+  autoScroll = nearBottom;
+  scrollIndicator.classList.toggle("show", !nearBottom);
+});
+
+// وقتی پیام جدید اضافه شد، اگر پایین هستی، خودکار بره پایین
+const observer = new MutationObserver(() => {
+  if (autoScroll) {
+    scrollTarget.scrollTo({
+      top: scrollTarget.scrollHeight,
+      behavior: "smooth",
+    });
+  }
+});
+observer.observe(scrollTarget, { childList: true, subtree: true });
+
+// کلیک روی فلش برای پرش به پایین
+scrollIndicator.addEventListener("click", () => {
+  scrollTarget.scrollTo({
+    top: scrollTarget.scrollHeight,
+    behavior: "smooth",
+  });
+});
+});
+</script>
+
+</body>
+</html>

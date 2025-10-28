@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mmdrza AI</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <!-- TypeIt.js -->
+  <script src="https://cdn.jsdelivr.net/npm/typeit@8.7.1/dist/index.umd.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+      background: radial-gradient(circle at top, #000015, #000428, #001f4d);
+      perspective: 1000px;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .galaxy-container {
+      position: relative;
+      z-index: 2;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #ff00ff, #ff8c00, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px #ff00ff, 0 0 60px #00ffff;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff8c00; }
+      to { text-shadow: 0 0 80px #00ffff, 0 0 120px #ff00ff; }
+    }
+
+    .fade-text {
+      opacity: 0.8;
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      animation: fadeIn 4s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .enter-btn {
+      background: linear-gradient(90deg, #ff0080, #ff8c00);
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-top: 2.5rem;
+      box-shadow: 0 0 25px #ff8c00;
+      transition: all 0.4s ease;
+      display: none;
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 60px #ff00ff, 0 0 100px #00ffff;
+    }
+
+    /* حلقه‌های نور واکنشی */
+    .mouse-ring {
+      position: fixed;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      mix-blend-mode: difference;
+      z-index: 10;
+      transition: transform 0.1s ease-out, opacity 0.4s ease;
+    }
+
+    /* Comets */
+    .comet {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 10px #00ffff;
+      animation: shoot 2.5s linear infinite;
+    }
+
+    @keyframes shoot {
+      0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translate(800px, 400px) scale(1); opacity: 0; }
+    }
+
+    /* AI Core */
+    .ai-core {
+      margin-top: 2rem;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00ffff 0%, transparent 70%);
+      box-shadow: 0 0 80px 20px rgba(0,255,255,0.5);
+      animation: spin 6s linear infinite, pulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 60px 10px rgba(0,255,255,0.3); }
+      100% { box-shadow: 0 0 120px 30px rgba(0,255,255,0.8); }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="galaxy-container">
+    <h1 id="galaxyTitle"></h1>
+    <p class="fade-text">Quantum AI Systems Booting...</p>
+    <div class="ai-core"></div>
+    <button class="enter-btn" id="enterBtn">Enter the mmdrza.AI Universe 🚀</button>
+  </div>
+
+  <div class="mouse-ring" id="mouseRing"></div>
+
+  <!-- Bootstrap & Particle.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <script>
+    // پارتیکل‌ها
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 180 },
+        "color": { "value": ["#ff0080", "#00ffff", "#ff8c00"] },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.7 },
+        "size": { "value": 3 },
+        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.2, "width": 1 },
+        "move": { "enable": true, "speed": 1.8, "direction": "none" }
+      },
+      "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" } } },
+      "retina_detect": true
+    });
+
+    // Comets
+    function createComet() {
+      const comet = document.createElement('div');
+      comet.classList.add('comet');
+      comet.style.left = Math.random() * window.innerWidth + 'px';
+      comet.style.top = Math.random() * window.innerHeight / 2 + 'px';
+      document.body.appendChild(comet);
+      setTimeout(() => comet.remove(), 2500);
+    }
+    setInterval(createComet, 1200);
+
+    // Mouse Reactive Rings
+    const ring = document.getElementById('mouseRing');
+    document.addEventListener('mousemove', e => {
+      ring.style.left = e.pageX - 15 + 'px';
+      ring.style.top = e.pageY - 15 + 'px';
+      ring.style.transform = 'scale(1.5)';
+      ring.style.opacity = 1;
+      setTimeout(() => {
+        ring.style.transform = 'scale(1)';
+        ring.style.opacity = 0.6;
+      }, 100);
+    });
+
+    // تایپ متن + صدا
+    new TypeIt("#galaxyTitle", {
+      speed: 75,
+      waitUntilVisible: true,
+      cursor: false
+    })
+    .type("🚀 Entering The ")
+    .pause(300)
+    .type("<span style='color:#ff0080;'>AI</span> ")
+    .pause(200)
+    .type("<span style='color:#00ffff;'>Galaxy...</span>")
+    .exec(() => {
+      const ambient = new Audio("https://cdn.pixabay.com/download/audio/2022/10/31/audio_4e6ff42042.mp3?filename=space-ambience-124842.mp3");
+      ambient.volume = 0.3;
+      ambient.loop = true;
+      ambient.play();
+    })
+    .go();
+
+    // نمایش دکمه
+    setTimeout(() => {
+      const btn = document.getElementById("enterBtn");
+      btn.style.display = "inline-block";
+      btn.classList.add("animate__animated", "animate__pulse");
+    }, 6500);
+
+    // کلیک دکمه
+    document.getElementById("enterBtn").addEventListener("click", () => {
+      const btn = document.getElementById("enterBtn");
+      btn.innerText = "Warping to mmdrza.AI Galaxy 🌌...";
+      btn.disabled = true;
+      btn.style.opacity = "0.6";
+      const warp = new Audio("https://cdn.pixabay.com/download/audio/2023/01/17/audio_8f50a9d91f.mp3?filename=sci-fi-warp-136126.mp3");
+      warp.volume = 0.6;
+      warp.play();
+      document.body.style.transition = "opacity 2s ease-out";
+      document.body.style.opacity = "0";
+      setTimeout(() => window.location.href = "app.html", 2500);
+    });
+  </script>
+</body>
+</html>
