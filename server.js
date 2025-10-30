@@ -134,6 +134,58 @@ app.post("/api/chat", async (req, res) => {
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "404.html"));
 });
+// 🧩 سیستم ثبت‌نام و ورود ساده با JSON File
+import fs from "fs";
+
+// مسیر فایل کاربران
+const USERS_FILE = path.join(__dirname, "users.json");
+
+// تابع برای خواندن کاربران
+function readUsers() {
+  if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]");
+  return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+}
+
+// تابع برای ذخیره کاربران
+function saveUsers(users) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+// 🔐 ثبت‌نام کاربر جدید
+app.post("/api/signup", (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password)
+    return res.status(400).json({ error: "Please fill all fields" });
+
+  const users = readUsers();
+  if (users.find(u => u.email === email)) {
+    return res.status(400).json({ error: "Email already registered" });
+  }
+
+  const newUser = {
+    id: Date.now(),
+    username,
+    email,
+    password, // در نسخه بعد هش می‌کنیم
+    createdAt: new Date().toISOString()
+  };
+
+  users.push(newUser);
+  saveUsers(users);
+
+  res.json({ message: "Signup successful", user: { username, email } });
+});
+
+// 🔓 ورود کاربر
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+  const users = readUsers();
+
+  const user = users.find(u => u.email === email && u.password === password);
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+  res.json({ message: "Login successful", user: { username: user.username, email: user.email } });
+});
 
 // 🚀 Start Server
 app.listen(PORT, () => {
