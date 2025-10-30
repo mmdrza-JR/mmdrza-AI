@@ -1,9 +1,11 @@
-// 🌌 mmdrza.AI — Cloud Optimized Server (v3.4 Production Ready)
+// 🌌 mmdrza.AI — Cloud Optimized Server (v3.5 Secure + Production Ready)
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import bcrypt from "bcrypt";
+import fs from "fs";
 
 // ⚙️ تنظیمات محیط
 dotenv.config();
@@ -12,13 +14,14 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Middleware عمومی
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
 const API_KEY = process.env.OPENAI_API_KEY;
 const PORT = process.env.PORT || 3000;
+const USERS_FILE = path.join(__dirname, "users.json");
+const SALT_ROUNDS = 10;
 
 // 🧠 شخصیت پیش‌فرض AI
 const SYSTEM_PROMPT = `
@@ -28,26 +31,23 @@ If the topic is not educational, politely refuse and guide back to learning.
 Respond warmly and clearly, in Persian if the user writes in Persian.
 `;
 
-// ✅ مسیر اصلی
+// ✅ صفحه اصلی
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// ✅ مسیر سلامت Railway / Vercel
+// ✅ مسیر سلامت
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", ai: "mmdrza.AI", version: "3.4-cloud" });
+  res.json({ status: "ok", ai: "mmdrza.AI", version: "3.5-secure" });
 });
 
-// 💬 مسیر اصلی چت با Stream + مدیریت reconnect
+// 💬 مسیر چت استریم
 app.post("/api/chat", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "Missing message." });
   if (!API_KEY) return res.status(500).json({ error: "Missing OpenAI API Key" });
 
-  // 🚀 لاگ ساده (بدون اسپم)
-  if (process.env.NODE_ENV !== "production") {
-    console.log("💬 User:", message);
-  }
+  console.log("💬 User:", message);
 
   try {
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -72,7 +72,6 @@ app.post("/api/chat", async (req, res) => {
       return res.status(500).json({ error: "OpenAI API failed", detail: errText });
     }
 
-    // ✅ آماده‌سازی استریم SSE
     res.writeHead(200, {
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
@@ -83,111 +82,108 @@ app.post("/api/chat", async (req, res) => {
     const decoder = new TextDecoder("utf-8");
     let buffer = "";
 
-    async function stream() {
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop();
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop();
 
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
 
-            const json = line.replace("data: ", "").trim();
-            if (json === "[DONE]") {
-              res.write("data: [DONE]\n\n");
-              res.end();
-              if (process.env.NODE_ENV !== "production") console.log("✅ Stream complete");
-              return;
-            }
-
-            try {
-              const parsed = JSON.parse(json);
-              const token = parsed.choices?.[0]?.delta?.content;
-              if (token) res.write(`data: ${JSON.stringify(token)}\n\n`);
-            } catch {
-              // ignore broken chunks
-            }
-          }
+        const json = line.replace("data: ", "").trim();
+        if (json === "[DONE]") {
+          res.write("data: [DONE]\n\n");
+          res.end();
+          console.log("✅ Stream finished successfully");
+          return;
         }
 
-        res.end();
-      } catch (err) {
-        console.error("⚠️ Stream error:", err.message);
-        if (!res.headersSent) res.status(500).json({ error: "Stream interrupted" });
+        try {
+          const parsed = JSON.parse(json);
+          const token = parsed.choices?.[0]?.delta?.content;
+          if (token) res.write(`data: ${JSON.stringify(token)}\n\n`);
+        } catch {
+          // ignore partials
+        }
       }
     }
 
-    stream();
-
+    res.end();
   } catch (err) {
-    console.error("🚨 Fatal Error:", err);
-    if (!res.headersSent)
-      res.status(500).json({ error: "OpenAI connection failed" });
+    console.error("🚨 Fatal Error:", err.message);
+    if (!res.headersSent) res.status(500).json({ error: "OpenAI connection failed" });
   }
 });
 
-// ✅ 404 Catch — فقط در محیط dev
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "404.html"));
-});
-// 🧩 سیستم ثبت‌نام و ورود ساده با JSON File
-import fs from "fs";
-
-// مسیر فایل کاربران
-const USERS_FILE = path.join(__dirname, "users.json");
-
-// تابع برای خواندن کاربران
+// 🧩 مدیریت کاربران با bcrypt و فایل JSON
 function readUsers() {
   if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]");
-  return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+  try {
+    return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8") || "[]");
+  } catch {
+    fs.writeFileSync(USERS_FILE, "[]");
+    return [];
+  }
 }
 
-// تابع برای ذخیره کاربران
 function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// 🔐 ثبت‌نام کاربر جدید
-app.post("/api/signup", (req, res) => {
+// 🔐 ثبت‌نام (رمز هش‌شده)
+app.post("/api/signup", async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password)
     return res.status(400).json({ error: "Please fill all fields" });
 
   const users = readUsers();
-  if (users.find(u => u.email === email)) {
+  if (users.find(u => u.email === email))
     return res.status(400).json({ error: "Email already registered" });
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const newUser = {
+      id: Date.now(),
+      username,
+      email,
+      password: hashedPassword,
+      createdAt: new Date().toISOString(),
+    };
+
+    users.push(newUser);
+    saveUsers(users);
+    console.log("✅ Registered:", email);
+    res.json({ message: "Signup successful", user: { username, email } });
+  } catch (err) {
+    console.error("Signup Error:", err);
+    res.status(500).json({ error: "Signup failed" });
   }
-
-  const newUser = {
-    id: Date.now(),
-    username,
-    email,
-    password, // در نسخه بعد هش می‌کنیم
-    createdAt: new Date().toISOString()
-  };
-
-  users.push(newUser);
-  saveUsers(users);
-
-  res.json({ message: "Signup successful", user: { username, email } });
 });
 
-// 🔓 ورود کاربر
-app.post("/api/login", (req, res) => {
+// 🔓 ورود (بررسی رمز هش‌شده)
+app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   const users = readUsers();
+  const user = users.find(u => u.email === email);
 
-  const user = users.find(u => u.email === email && u.password === password);
-  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+  if (!user) return res.status(401).json({ error: "Invalid email or password" });
 
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.status(401).json({ error: "Invalid email or password" });
+
+  console.log("🔐 Login:", email);
   res.json({ message: "Login successful", user: { username: user.username, email: user.email } });
 });
 
-// 🚀 Start Server
+// ✅ 404 برای مسیرهای نامعتبر
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "404.html"));
+});
+
+// 🚀 راه‌اندازی سرور
 app.listen(PORT, () => {
-  console.log(`🚀 mmdrza.AI (Cloud Mode) running at http://localhost:${PORT}`);
+  console.log(`🚀 mmdrza.AI v3.5 running at http://localhost:${PORT}`);
 });
