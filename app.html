@@ -35,61 +35,95 @@
   </div>
 
   <!-- 🌌 Navbar -->
-  <nav class="navbar navbar-dark">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-      <a class="navbar-brand fw-bold" href="#"><i class="bi bi-stars me-2"></i>mmdrza.AI</a>
+  <!-- 🌌 Navbar -->
+<nav class="navbar navbar-expand-md navbar-dark glass-nav px-3 py-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    <!-- 🌟 Brand -->
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand fw-bold neon-brand" href="#">
+        <i class="bi bi-stars me-2 text-info"></i> mmdrza.AI
+      </a>
 
-      <div class="d-flex align-items-center gap-2">
-        <div id="userWelcome" class="fw-semibold" style="color:#00ffff;">👋 Welcome, Guest</div>
-        <span id="ultraBadge" class="ultra-badge" style="display:none;">
-          <i class="bi bi-stars"></i> ULTRA ACTIVE
-        </span>
-        <button id="settingsBtn" class="btn btn-outline-info btn-sm"><i class="bi bi-gear"></i></button>
-        <button id="logoutBtn" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-right"></i></button>
-      </div>
+      <!-- ☰ Mobile Menu Button -->
+      <button class="btn btn-outline-light ms-2 d-md-none glowing-burger" id="menuToggle" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
-  </nav>
 
-  <!-- 💬 Main Chat Container -->
+    <!-- 🌐 Right Controls -->
+    <div class="d-flex align-items-center gap-2">
+      <span id="ultraBadge" class="ultra-badge" style="display:none;">
+        <i class="bi bi-stars text-warning"></i> ULTRA ACTIVE
+      </span>
+
+      <span id="userWelcome" class="fw-semibold user-welcome">👋 Welcome, Guest</span>
+      
+      <button id="settingsBtn" class="btn btn-outline-info btn-sm rounded-circle" title="Settings">
+        <i class="bi bi-gear-fill"></i>
+      </button>
+      <button id="logoutBtn" class="btn btn-outline-danger btn-sm rounded-circle" title="Logout">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+
+  <!-- 📱 Offcanvas Menu (Mobile) -->
+  <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="mobileMenu">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title"><i class="bi bi-stars me-2"></i> mmdrza.AI Menu</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <button id="newChatBtnMobile" class="btn btn-outline-info w-100 mb-2">
+        <i class="bi bi-chat-dots"></i> New Chat
+      </button>
+      <button id="clearChatBtnMobile" class="btn btn-outline-danger w-100 mb-3">
+        <i class="bi bi-trash"></i> Clear Chat
+      </button>
+      <hr class="text-secondary">
+      <button id="openUltraMobile" class="btn btn-warning w-100">
+        <i class="bi bi-stars"></i> mmdrza.AI ULTRA
+      </button>
+    </div>
+  </div>
+
+  <!-- 💬 Chat Layout -->
   <div class="chat-container">
-    <!-- 🧭 Sidebar -->
-    <div class="sidebar">
+    <aside class="sidebar">
       <h5><i class="bi bi-lightning-charge-fill"></i> Tools</h5>
       <button id="newChatBtn" class="btn w-100"><i class="bi bi-chat-dots"></i> New Chat</button>
       <button id="clearChatBtn" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Clear Chat</button>
-    </div>
+    </aside>
 
-    <!-- 💬 Chat Area -->
-    <div class="chat-main">
+    <main class="chat-main">
       <div id="chatMessages" class="chat-messages">
         <div class="message msg-ai">
           <div class="msg-content">👋 Welcome to <b>mmdrza.AI</b> — your study companion.</div>
         </div>
       </div>
 
-      <!-- ⬇ Scroll Indicator -->
       <div id="scrollIndicator" class="scroll-indicator">
         <i class="bi bi-arrow-down-short fs-4"></i>
       </div>
 
-      <!-- 📝 Input Area -->
+      <!-- 📝 Input -->
       <div class="chat-input">
         <input id="userInput" type="text" placeholder="Type your message...">
-
-        <!-- 📎 Attach Button -->
         <button id="attachBtn" class="btn attach-btn rounded-circle me-2">
           <i class="bi bi-paperclip"></i>
         </button>
-
         <button id="sendBtn"><i class="bi bi-send-fill"></i></button>
       </div>
 
-      <!-- 🖼️ File Preview -->
       <div id="filePreviewContainer" class="file-preview"></div>
-    </div>
+    </main>
   </div>
 
-  <!-- 🪄 Attach Slide-Up Panel -->
+  <!-- 🪄 Attach Panel -->
   <div id="attachPanel" class="attach-panel">
     <div class="attach-content">
       <h6 class="text-info fw-semibold mb-3"><i class="bi bi-cloud-arrow-up"></i> Upload Options</h6>
@@ -142,7 +176,7 @@
     </div>
   </div>
 
-  <!-- 💎 ULTRA MODAL -->
+  <!-- 💎 Ultra Modal -->
   <div class="ultra-modal" id="ultraModal">
     <div class="ultra-content animate__animated animate__fadeInUp">
       <button class="ultra-close" id="ultraClose">&times;</button>
@@ -188,10 +222,19 @@
     </div>
   </div>
 
-  <!-- 💎 Floating ULTRA Button -->
+  <!-- 💎 Floating Ultra Button -->
   <button id="ultraBtn" class="ultra-float-btn">
     <i class="bi bi-stars"></i> <span>mmdrza.AI ULTRA</span>
   </button>
+<!-- 🌌 Footer -->
+<!-- 🌌 Footer -->
+<footer class="chat-footer text-center mt-3">
+  <div class="footer-glow"></div>
+  <p class="footer-text mb-0">
+    created by <span class="neon-cyan">mmdrza</span> — 
+    EE / <span class="neon-gold">University of Tehran</span> — <span class="footer-year">2025</span>
+  </p>
+</footer>
 
   <!-- ⚙️ Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

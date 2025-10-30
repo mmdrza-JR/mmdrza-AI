@@ -786,3 +786,144 @@ body.light-mode .loader-text span {
   background: rgba(0,255,255,0.1);
   box-shadow: 0 0 25px rgba(0,255,255,0.4);
 }
+/* 📱 Responsive Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none !important;
+  }
+  .ultra-float-btn {
+    display: none !important;
+  }
+  .chat-main {
+    width: 100%;
+  }
+  #menuToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+/* 🌌 Footer Neon Style */
+.chat-footer {
+  position: relative;
+  padding: 12px 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* 💫 Footer text */
+.footer-text {
+  color: #ddd;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  position: relative;
+}
+
+.footer-text:hover {
+  color: #fff;
+}
+
+/* 💎 Neon Highlights */
+.neon-cyan {
+  color: #00ffff;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(0,255,255,0.6);
+}
+
+.neon-gold {
+  color: #ffd700;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255,215,0,0.6);
+}
+
+/* 🌈 Animated Glow Line */
+.footer-glow {
+  position: absolute;
+  bottom: 0;
+  left: -50%;
+  width: 200%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ffff, #ffd700, transparent);
+  animation: glowSlide 4s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes glowSlide {
+  0% { left: -50%; }
+  50% { left: 0%; }
+  100% { left: 50%; }
+}
+
+/* 📱 Responsive Fix */
+@media (max-width: 576px) {
+  .footer-text {
+    font-size: 0.78rem;
+  }
+}
+/* 🌌 Glassy Navbar Style */
+.glass-nav {
+  background: rgba(15, 15, 30, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* 💎 Brand Text */
+.neon-brand {
+  color: #00ffff !important;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-shadow: 0 0 8px rgba(0,255,255,0.6);
+  transition: 0.3s ease;
+}
+
+.neon-brand:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(0,255,255,0.8), 0 0 20px rgba(0,255,255,0.4);
+  transform: scale(1.03);
+}
+
+/* ☰ Glowing Burger Button */
+.glowing-burger {
+  border: 1px solid rgba(0,255,255,0.4);
+  color: #00ffff;
+  box-shadow: 0 0 6px rgba(0,255,255,0.3);
+  transition: all 0.3s ease;
+}
+
+.glowing-burger:hover {
+  background: rgba(0,255,255,0.1);
+  box-shadow: 0 0 10px rgba(0,255,255,0.7);
+  transform: scale(1.05);
+}
+
+/* 👋 User Welcome */
+.user-welcome {
+  color: #00ffff;
+  font-size: 0.9rem;
+  margin-right: 8px;
+}
+
+/* 🌟 Buttons on Right */
+.navbar .btn {
+  transition: all 0.25s ease;
+}
+
+.navbar .btn:hover {
+  transform: translateY(-2px);
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 768px) {
+  .neon-brand {
+    font-size: 1.05rem;
+  }
+  .user-welcome {
+    display: none; /* پنهان در موبایل برای جا دادن دکمه‌ها */
+  }
+}
+
