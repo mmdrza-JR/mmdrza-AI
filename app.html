@@ -1,60 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-  const user = JSON.parse(localStorage.getItem("mmdrzaUser"));
-  if (!user) {
-    alert("🚫 ابتدا باید وارد حساب خود شوید!");
-    window.location.href = "index.html";
-  } else {
-    console.log("✅ Logged in as:", user.username);
-  }
-</script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>mmdrza.AI — Chat</title>
 
-  <!-- Bootstrap & Icons -->
+  <!-- 🧠 Auth Check -->
+  <script>
+    const user = JSON.parse(localStorage.getItem("mmdrzaUser"));
+    if (!user) {
+      alert("🚫 ابتدا باید وارد حساب خود شوید!");
+      window.location.href = "index.html";
+    } else {
+      console.log("✅ Logged in as:", user.username);
+    }
+  </script>
+
+  <!-- 📦 Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Custom CSS -->
+  <!-- 🎨 Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <!-- 🔷 Loader Start -->
-<div id="loader">
-  <div class="loader-content">
-    <div class="neon-circle"></div>
-    <h2 class="loader-text">Initializing <span>mmdrza.AI</span>...</h2>
+  <!-- 🔷 Loader -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="neon-circle"></div>
+      <h2 class="loader-text">Initializing <span>mmdrza.AI</span>...</h2>
+    </div>
   </div>
-</div>
-<!-- 🔷 Loader End -->
 
+  <!-- 🌌 Navbar -->
   <nav class="navbar navbar-dark">
-    <div class="container-fluid d-flex justify-content-between">
-      <a class="navbar-brand" href="#"><i class="bi bi-stars me-2"></i>mmdrza.AI</a>
-      <button id="settingsBtn" class="btn btn-outline-info btn-sm"><i class="bi bi-gear"></i></button>
-      <button id="logoutBtn" class="btn btn-danger btn-sm ms-2">
-  <i class="bi bi-box-arrow-right"></i> Logout
-</button>
-<div id="userWelcome" class="text-end pe-3 fw-semibold" style="color:#00ffff;">
-  👋 Welcome, Guest
-</div>
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <a class="navbar-brand fw-bold" href="#"><i class="bi bi-stars me-2"></i>mmdrza.AI</a>
 
+      <div class="d-flex align-items-center gap-2">
+        <div id="userWelcome" class="fw-semibold" style="color:#00ffff;">👋 Welcome, Guest</div>
+        <span id="ultraBadge" class="ultra-badge" style="display:none;">
+          <i class="bi bi-stars"></i> ULTRA ACTIVE
+        </span>
+        <button id="settingsBtn" class="btn btn-outline-info btn-sm"><i class="bi bi-gear"></i></button>
+        <button id="logoutBtn" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
     </div>
   </nav>
 
+  <!-- 💬 Main Chat Container -->
   <div class="chat-container">
+    <!-- 🧭 Sidebar -->
     <div class="sidebar">
       <h5><i class="bi bi-lightning-charge-fill"></i> Tools</h5>
       <button id="newChatBtn" class="btn w-100"><i class="bi bi-chat-dots"></i> New Chat</button>
       <button id="clearChatBtn" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Clear Chat</button>
     </div>
 
+    <!-- 💬 Chat Area -->
     <div class="chat-main">
       <div id="chatMessages" class="chat-messages">
         <div class="message msg-ai">
@@ -62,15 +67,51 @@
         </div>
       </div>
 
+      <!-- ⬇ Scroll Indicator -->
       <div id="scrollIndicator" class="scroll-indicator">
         <i class="bi bi-arrow-down-short fs-4"></i>
       </div>
 
+      <!-- 📝 Input Area -->
       <div class="chat-input">
         <input id="userInput" type="text" placeholder="Type your message...">
+
+        <!-- 📎 Attach Button -->
+        <button id="attachBtn" class="btn attach-btn rounded-circle me-2">
+          <i class="bi bi-paperclip"></i>
+        </button>
+
         <button id="sendBtn"><i class="bi bi-send-fill"></i></button>
       </div>
+
+      <!-- 🖼️ File Preview -->
+      <div id="filePreviewContainer" class="file-preview"></div>
     </div>
+  </div>
+
+  <!-- 🪄 Attach Slide-Up Panel -->
+  <div id="attachPanel" class="attach-panel">
+    <div class="attach-content">
+      <h6 class="text-info fw-semibold mb-3"><i class="bi bi-cloud-arrow-up"></i> Upload Options</h6>
+      <div class="attach-grid">
+        <div class="attach-card" id="attachPhoto">
+          <i class="bi bi-image text-primary"></i>
+          <span>Photo</span>
+        </div>
+        <div class="attach-card" id="attachFile">
+          <i class="bi bi-file-earmark-arrow-up text-success"></i>
+          <span>File</span>
+        </div>
+        <div class="attach-card" id="attachPdf">
+          <i class="bi bi-filetype-pdf text-danger"></i>
+          <span>PDF</span>
+        </div>
+      </div>
+      <button id="closeAttach" class="btn btn-outline-light btn-sm mt-3 w-100">
+        <i class="bi bi-x-lg"></i> Close
+      </button>
+    </div>
+    <input type="file" id="hiddenFileInput" style="display:none;" multiple>
   </div>
 
   <!-- ⚙️ Settings Modal -->
@@ -101,7 +142,58 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- 💎 ULTRA MODAL -->
+  <div class="ultra-modal" id="ultraModal">
+    <div class="ultra-content animate__animated animate__fadeInUp">
+      <button class="ultra-close" id="ultraClose">&times;</button>
+      <div class="ultra-header">
+        <h2><i class="bi bi-stars text-warning"></i> mmdrza.AI <span>Ultra</span></h2>
+        <p>نسخه ویژه با امکانات پیشرفته 🌌</p>
+      </div>
+
+      <div class="ultra-pricing">
+        <div class="price-card">
+          <h4>اشتراک ماهانه</h4>
+          <p class="price">50,000 <span>تومان</span></p>
+        </div>
+        <div class="price-card best">
+          <h4>اشتراک سالانه</h4>
+          <p class="price">450,000 <span>تومان</span></p>
+          <small class="badge bg-success">10٪ تخفیف</small>
+        </div>
+      </div>
+
+      <div class="ultra-payment mt-4">
+        <h5><i class="bi bi-credit-card-2-front"></i> اطلاعات پرداخت</h5>
+        <p>برای فعال‌سازی نسخه Ultra، مبلغ را به شماره کارت زیر واریز کنید:</p>
+        <div class="card-box">
+          <div id="merchantCardNumber" class="card-number">•••• •••• •••• 8171</div>
+          <div class="card-buttons">
+            <button class="btn btn-outline-light btn-sm" id="showCardBtn">نمایش کامل</button>
+            <button class="btn btn-info btn-sm" id="copyCardBtn">کپی</button>
+          </div>
+        </div>
+        <button class="btn btn-warning w-100 mt-3" id="ultraManual">✅ پرداخت انجام شد، فعال‌سازی Ultra</button>
+      </div>
+
+      <div id="ultraFeatures" class="ultra-features mt-4" style="display:none;">
+        <h5><i class="bi bi-rocket-takeoff"></i> امکانات فعال‌شده:</h5>
+        <ul>
+          <li><i class="bi bi-images"></i> ارسال عکس و فایل</li>
+          <li><i class="bi bi-mic"></i> ورودی صوتی</li>
+          <li><i class="bi bi-translate"></i> ترجمه هوشمند</li>
+          <li><i class="bi bi-lightning-charge"></i> پاسخ سریع‌تر</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💎 Floating ULTRA Button -->
+  <button id="ultraBtn" class="ultra-float-btn">
+    <i class="bi bi-stars"></i> <span>mmdrza.AI ULTRA</span>
+  </button>
+
+  <!-- ⚙️ Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>

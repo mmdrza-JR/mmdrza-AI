@@ -273,3 +273,497 @@ body.light-mode .loader-text span {
   from { box-shadow: 0 0 20px #00cfff, 0 0 50px #00aaff; }
   to { box-shadow: 0 0 45px #00e1ff, 0 0 90px #00bbff; }
 }
+/* 🌟 پاپ‌آپ ثبت‌نام برای مهمان */
+.signup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  animation: fadeIn 0.5s ease;
+}
+
+.signup-box {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 35px rgba(0, 200, 255, 0.5);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  text-align: center;
+  color: #fff;
+  width: 90%;
+  max-width: 420px;
+  animation: pulseBox 3s infinite ease-in-out alternate;
+}
+
+@keyframes pulseBox {
+  from { box-shadow: 0 0 25px rgba(0, 255, 255, 0.3); transform: scale(1); }
+  to { box-shadow: 0 0 60px rgba(0, 255, 255, 0.7); transform: scale(1.03); }
+}
+
+.signup-box button {
+  border-radius: 40px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.signup-box button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px #00e0ff;
+}
+/* Ultra floating button */
+.ultra-btn {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 9999;
+  background: linear-gradient(135deg,#ff0080,#ff8c00);
+  color: white;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 25px rgba(255,0,128,0.15);
+  cursor: pointer;
+}
+
+
+.ultra-modal.show { display:flex; }
+.ultra-card {
+  width: 92%;
+  max-width: 520px;
+  background: rgba(10,10,20,0.95);
+  padding: 18px;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+}
+.card-info { background: rgba(255,255,255,0.03); padding:12px; border-radius:8px; margin-bottom:10px; }
+.card-number { font-size:1.05rem; margin-top:6px; color:#ffd580; font-weight:700; }
+
+/* small responsive tweak */
+@media (max-width:480px) {
+  .ultra-card { padding: 12px; }
+  .ultra-btn { left: 12px; bottom: 12px; padding:10px; }
+}
+.dropdown .btn-outline-info {
+  border: 1px solid #00bfff;
+  color: #00bfff;
+  transition: 0.3s ease;
+}
+.dropdown .btn-outline-info:hover {
+  background: linear-gradient(90deg, #007bff, #00bfff);
+  color: white;
+  box-shadow: 0 0 10px #00bfff;
+}
+.dropdown-menu {
+  background: rgba(0, 20, 50, 0.95);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  box-shadow: 0 0 25px rgba(0, 200, 255, 0.2);
+}
+.dropdown-item {
+  color: white;
+  transition: 0.2s;
+}
+.dropdown-item:hover {
+  background: linear-gradient(90deg, #0040ff, #00c2ff);
+  color: #fff;
+  box-shadow: 0 0 10px #00bfff;
+}
+/* 💎 Ultra Lock Overlay */
+.ultra-lock-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.ultra-lock-box {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  box-shadow: 0 0 35px rgba(0, 200, 255, 0.4);
+  border-radius: 18px;
+  padding: 2rem;
+  text-align: center;
+  color: #fff;
+  width: 90%;
+  max-width: 420px;
+  animation: pulseBox 2s ease-in-out infinite alternate;
+}
+
+.ultra-lock-box h4 {
+  font-weight: 700;
+  color: #00e0ff;
+  margin-bottom: 0.8rem;
+}
+.ultra-lock-box p {
+  color: #ddd;
+  font-size: 0.95rem;
+}
+.ultra-lock-box button {
+  border-radius: 30px;
+  font-weight: 600;
+  box-shadow: 0 0 15px #00bfff;
+}
+.ultra-lock-box button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px #00ffff;
+}
+/* 💎 ULTRA MODAL STYLES */
+.ultra-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.ultra-modal.show {
+  display: flex;
+}
+
+.ultra-content {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 0 35px rgba(0, 200, 255, 0.4);
+  padding: 2.2rem;
+  width: 90%;
+  max-width: 520px;
+  text-align: center;
+  color: white;
+  animation: fadeIn 0.6s ease;
+}
+
+.ultra-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.8rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.ultra-close:hover {
+  color: #00ffff;
+  transform: rotate(90deg);
+}
+
+.ultra-header h2 {
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+.ultra-header h2 span {
+  color: #00e0ff;
+  text-shadow: 0 0 12px #00bfff;
+}
+.ultra-header p {
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+/* 💰 Pricing */
+.ultra-pricing {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.price-card {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  border-radius: 14px;
+  padding: 1rem;
+  transition: 0.3s;
+}
+.price-card.best {
+  background: linear-gradient(135deg, #0048ff55, #00f2ff44);
+  border-color: #00e0ff;
+  box-shadow: 0 0 20px #00cfff77;
+}
+.price-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px #00ffff88;
+}
+.price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #00e0ff;
+}
+.price span {
+  font-size: 0.8rem;
+}
+
+/* 💳 Payment Info */
+.card-box {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 0.8rem 0;
+  box-shadow: 0 0 10px #00bfff55;
+}
+.card-number {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+  font-family: monospace;
+  color: #00ffff;
+}
+.card-buttons .btn {
+  font-size: 0.85rem;
+  margin: 0 4px;
+}
+
+/* 🚀 Features */
+.ultra-features ul {
+  list-style: none;
+  padding: 0;
+}
+.ultra-features li {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #bffaff;
+}
+.ultra-features i {
+  color: #00e0ff;
+  margin-right: 0.5rem;
+}
+/* 💎 Floating Ultra Button */
+.ultra-float-btn {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  background: linear-gradient(135deg, #0040ff, #00ffff);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  box-shadow: 0 0 20px #00bfffaa;
+  z-index: 9999;
+  animation: ultraPulse 2s infinite ease-in-out alternate;
+  transition: 0.3s;
+}
+.ultra-float-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 35px #00e0ff;
+}
+.ultra-float-btn i {
+  font-size: 1.2rem;
+}
+@keyframes ultraPulse {
+  from {
+    box-shadow: 0 0 15px #00bfff, 0 0 30px #0040ff;
+  }
+  to {
+    box-shadow: 0 0 30px #00ffff, 0 0 60px #00bfff;
+  }
+}
+/* ⭐ ULTRA ACTIVE BADGE */
+.ultra-badge {
+  margin-left: 10px;
+  padding: 5px 12px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #00c3ff, #0066ff);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 20px #00e0ff;
+  text-shadow: 0 0 6px #00ffff;
+  animation: ultraGlow 2.5s ease-in-out infinite alternate;
+}
+.ultra-badge i {
+  color: gold;
+  font-size: 1rem;
+}
+@keyframes ultraGlow {
+  from {
+    box-shadow: 0 0 10px #00e0ff, 0 0 20px #0066ff;
+  }
+  to {
+    box-shadow: 0 0 25px #00ffff, 0 0 40px #00cfff;
+  }
+}
+/* 📎 Attach Button & Dropdown */
+.attach-btn {
+  background: rgba(0, 255, 255, 0.15);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  color: #00e0ff;
+  font-size: 1.2rem;
+  width: 46px;
+  height: 46px;
+  transition: all 0.3s ease;
+}
+.attach-btn:hover {
+  background: linear-gradient(135deg, #00bfff, #007bff);
+  color: #fff;
+  transform: scale(1.08);
+  box-shadow: 0 0 15px #00bfff;
+}
+.neon-dropdown {
+  background: rgba(0, 15, 40, 0.95);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+  animation: fadeIn 0.3s ease;
+}
+.neon-dropdown .dropdown-item {
+  color: #e0faff;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+.neon-dropdown .dropdown-item:hover {
+  background: linear-gradient(90deg, #0040ff, #00ffff);
+  color: #fff;
+  transform: translateX(4px);
+}
+/* 🖼️ File Preview Section */
+.file-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+.file-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 20, 40, 0.8);
+}
+.file-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.file-item span {
+  font-size: 0.75rem;
+  color: #00e0ff;
+  text-align: center;
+  padding: 2px 4px;
+  word-break: break-word;
+}
+.file-remove {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  background: rgba(255, 0, 0, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1;
+}
+.file-remove:hover {
+  background: red;
+}
+/* 🪄 Slide-up Attach Panel */
+.attach-panel {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 10, 25, 0.95);
+  border-top: 1px solid rgba(0,255,255,0.2);
+  box-shadow: 0 -4px 25px rgba(0,255,255,0.2);
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+  z-index: 9999;
+  padding: 1rem 1.5rem;
+}
+.attach-panel.show {
+  bottom: 0;
+}
+
+.attach-content {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.attach-grid {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.attach-card {
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0,255,255,0.15);
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.attach-card:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 0 20px #00e0ff, 0 0 30px #0066ff;
+}
+.attach-card i {
+  font-size: 1.7rem;
+}
+.attach-card span {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* 📎 Attach Button Style */
+.attach-btn {
+  background: rgba(0, 255, 255, 0.15);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  color: #00e0ff;
+  font-size: 1.2rem;
+  width: 46px;
+  height: 46px;
+  transition: all 0.3s ease;
+}
+.attach-btn:hover {
+  background: linear-gradient(135deg, #00bfff, #007bff);
+  color: #fff;
+  transform: scale(1.08);
+  box-shadow: 0 0 15px #00bfff;
+}

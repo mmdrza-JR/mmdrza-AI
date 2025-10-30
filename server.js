@@ -1,14 +1,14 @@
-// 🌌 mmdrza.AI — Cloud Optimized Server (v3.5 Secure + Production Ready)
+// 🌌 mmdrza.AI — Ultra Edition Server (v4.0 Secure + Stream Stable)
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcryptjs";
-
 import fs from "fs";
+import multer from "multer";
 
-// ⚙️ تنظیمات محیط
+// ⚙️ تنظیم محیط
 dotenv.config();
 
 const app = express();
@@ -23,6 +23,9 @@ const API_KEY = process.env.OPENAI_API_KEY;
 const PORT = process.env.PORT || 3000;
 const USERS_FILE = path.join(__dirname, "users.json");
 const SALT_ROUNDS = 10;
+
+// 📂 تنظیم آپلود فایل‌ها
+const upload = multer({ dest: path.join(__dirname, "uploads/") });
 
 // 🧠 شخصیت پیش‌فرض AI
 const SYSTEM_PROMPT = `
@@ -39,7 +42,7 @@ app.get("/", (req, res) => {
 
 // ✅ مسیر سلامت
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", ai: "mmdrza.AI", version: "3.5-secure" });
+  res.json({ status: "ok", ai: "mmdrza.AI", version: "4.0-ultra" });
 });
 
 // 💬 مسیر چت استریم
@@ -79,6 +82,8 @@ app.post("/api/chat", async (req, res) => {
       Connection: "keep-alive",
     });
 
+    if (res.flushHeaders) res.flushHeaders(); // 💡 برای جلوگیری از بافر شدن
+
     const reader = aiRes.body.getReader();
     const decoder = new TextDecoder("utf-8");
     let buffer = "";
@@ -97,8 +102,8 @@ app.post("/api/chat", async (req, res) => {
         const json = line.replace("data: ", "").trim();
         if (json === "[DONE]") {
           res.write("data: [DONE]\n\n");
-          res.end();
           console.log("✅ Stream finished successfully");
+          res.end();
           return;
         }
 
@@ -112,14 +117,37 @@ app.post("/api/chat", async (req, res) => {
       }
     }
 
-    res.end();
+    // 🔧 پایان امن برای جلوگیری از "سه نقطه" بدون پاسخ
+    setTimeout(() => {
+      if (!res.writableEnded) {
+        res.write("data: [DONE]\n\n");
+        res.end();
+      }
+    }, 300);
   } catch (err) {
     console.error("🚨 Fatal Error:", err.message);
-    if (!res.headersSent) res.status(500).json({ error: "OpenAI connection failed" });
+    if (!res.headersSent)
+      res.status(500).json({ error: "OpenAI connection failed" });
   }
 });
 
-// 🧩 مدیریت کاربران با bcrypt و فایل JSON
+// 📂 مسیر آپلود فایل برای Ultra
+app.post("/api/upload", upload.array("files"), (req, res) => {
+  try {
+    const fileInfos = req.files.map(f => ({
+      name: f.originalname,
+      size: f.size,
+      path: f.path,
+    }));
+    console.log("📁 Uploaded:", fileInfos.length, "files");
+    res.json({ message: "Files uploaded", files: fileInfos });
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
+
+// 🧩 مدیریت کاربران
 function readUsers() {
   if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]");
   try {
@@ -129,12 +157,11 @@ function readUsers() {
     return [];
   }
 }
-
 function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// 🔐 ثبت‌نام (رمز هش‌شده)
+// 🔐 ثبت‌نام
 app.post("/api/signup", async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password)
@@ -152,8 +179,8 @@ app.post("/api/signup", async (req, res) => {
       email,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
+      isUltra: false,
     };
-
     users.push(newUser);
     saveUsers(users);
     console.log("✅ Registered:", email);
@@ -164,7 +191,7 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-// 🔓 ورود (بررسی رمز هش‌شده)
+// 🔓 ورود
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   const users = readUsers();
@@ -176,15 +203,36 @@ app.post("/api/login", async (req, res) => {
   if (!match) return res.status(401).json({ error: "Invalid email or password" });
 
   console.log("🔐 Login:", email);
-  res.json({ message: "Login successful", user: { username: user.username, email: user.email } });
+  res.json({
+    message: "Login successful",
+    user: { username: user.username, email: user.email, isUltra: user.isUltra },
+  });
 });
 
-// ✅ 404 برای مسیرهای نامعتبر
+// 💎 ارتقاء به Ultra
+app.post("/api/upgrade", (req, res) => {
+  const { email, method } = req.body;
+  if (!email) return res.status(400).json({ error: "Missing email" });
+
+  const users = readUsers();
+  const user = users.find(u => u.email === email);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  user.isUltra = true;
+  user.upgradedAt = new Date().toISOString();
+  user.method = method || "manual";
+  saveUsers(users);
+
+  console.log("💎 User upgraded to Ultra:", email);
+  res.json({ message: "User upgraded to Ultra" });
+});
+
+// ✅ صفحه 404
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "404.html"));
 });
 
-// 🚀 راه‌اندازی سرور
+// 🚀 اجرا
 app.listen(PORT, () => {
-  console.log(`🚀 mmdrza.AI v3.5 running at http://localhost:${PORT}`);
+  console.log(`🚀 mmdrza.AI Ultra v4.0 running at http://localhost:${PORT}`);
 });
