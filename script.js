@@ -212,6 +212,17 @@ document.getElementById("attachPdf")?.addEventListener("click", () => {
   hiddenFileInput.accept = "application/pdf";
   hiddenFileInput.click();
 });
+// 🎯 انتخاب نوع اشتراک (ماهانه یا سالانه)
+document.querySelectorAll(".price-card").forEach(card => {
+  card.addEventListener("click", () => {
+    document.querySelectorAll(".price-card").forEach(c => c.classList.remove("selected"));
+    card.classList.add("selected");
+
+    // نمایش انتخاب در کنسول یا ثبت برای فعال‌سازی
+    const plan = card.querySelector("h4").innerText.trim();
+    console.log("✅ Selected plan:", plan);
+  });
+});
 
 hiddenFileInput?.addEventListener("change", (e) => {
   const files = Array.from(e.target.files);
@@ -226,7 +237,7 @@ hiddenFileInput?.addEventListener("change", (e) => {
   // ====== ⚠️ اینجا شماره کارت خودت رو قرار بده (یا از سرور بگیر) ======
   // مثال: const MERCHANT_CARD = "6037-1234-5678-9012";
   // یا برای امنیت بیشتر: const MERCHANT_CARD = "6037-****-****-9012";
-  const MERCHANT_CARD = "5022291337738171"; // <-- شماره‌ کارتِ خودت رو اینجا بذار
+  const MERCHANT_CARD = "5022-2913-3773-8171"; // <-- شماره‌ کارتِ خودت رو اینجا بذار
 
   // نمایش ماسک‌شده اولیه (مثال: اول/وسط مخفی)
   function maskCard(card) {
