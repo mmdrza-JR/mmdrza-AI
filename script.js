@@ -1,7 +1,7 @@
 // 🌀 LOADER LOGIC
 window.addEventListener("load", () => {
   const loader = document.getElementById("loader");
-  setTimeout(() => loader.classList.add("hidden"), 1800); // زمان نمایشش
+  setTimeout(() => loader.classList.add("hidden"), 1800);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,10 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("sendBtn");
   const scrollIndicator = document.getElementById("scrollIndicator");
   const modal = new bootstrap.Modal(document.getElementById("settingsModal"));
+  // 🧠 نمایش نام کاربر در هدر (Welcome message)
+const userWelcome = document.getElementById("userWelcome");
+if (userWelcome) {
+  const user = JSON.parse(localStorage.getItem("mmdrzaUser"));
+  if (user && user.username) {
+    userWelcome.textContent = `👋 Welcome, ${user.username}`;
+  } else {
+    userWelcome.textContent = "👋 Welcome, Guest";
+  }
+}
 
   let typingSpeed = 25;
   let voiceEnabled = false;
   let autoScroll = true;
+
+  // 🧩 بررسی ورود کاربر و تنظیم محدودیت پیام
+  const user = JSON.parse(localStorage.getItem("mmdrzaUser"));
+  let messageCount = 0;
+  const MAX_MESSAGES = user ? Infinity : 5; // اگر لاگین نیستی، فقط ۵ پیام مجاز
 
   // 🌓 Load saved theme
   const savedTheme = localStorage.getItem("theme") || "dark";
@@ -49,6 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (autoScroll) messages.scrollTo({ top: messages.scrollHeight, behavior: "smooth" });
   }
 
+  // 🧩 محدودیت پیام برای کاربران مهمان
+  function canSendMessage() {
+    if (!user && messageCount >= MAX_MESSAGES) {
+      addMessage("⚠️ برای ادامه لطفاً وارد حساب خود شوید یا ثبت‌نام کنید 🌟", "ai");
+      return false;
+    }
+    return true;
+  }
+
   // 🚀 Send event
   sendBtn.addEventListener("click", sendMessage);
   input.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
@@ -56,6 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
   async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
+    if (!canSendMessage()) return;
+
+    messageCount++; // شمارنده‌ی پیام‌ها
+
     addMessage(text, "user");
     input.value = "";
 
@@ -90,11 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
           const data = line.replace("data:", "").trim();
           if (data === "[DONE]") return;
           try {
-  const token = JSON.parse(data);
-  msgContent.innerHTML += token; // متن استریم‌شده
-} catch {
-  msgContent.innerHTML += data.replace(/["']/g, ""); // درصورت JSON ناقص
-}
+            const token = JSON.parse(data);
+            msgContent.innerHTML += token;
+          } catch {
+            msgContent.innerHTML += data.replace(/["']/g, "");
+          }
 
           if (autoScroll) messages.scrollTo({ top: messages.scrollHeight });
         }
@@ -115,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.innerHTML = "";
     addMessage("Chat cleared. Ready to start again!", "ai");
   });
-// ✅ مسیر 404 — هر مسیر ناشناخته بره به صفحه‌ی سفارشی
 
   // 📩 Scroll indicator
   const chatBox = document.querySelector(".chat-messages");
@@ -126,7 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
   scrollIndicator.addEventListener("click", () => {
     chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: "smooth" });
   });
-    // ➕ New Chat Button
+
+  // ➕ New Chat Button
   const newChatBtn = document.getElementById("newChatBtn");
   if (newChatBtn) {
     newChatBtn.addEventListener("click", () => {
@@ -134,5 +162,18 @@ document.addEventListener("DOMContentLoaded", () => {
       addMessage("👋 New conversation started. How can I help you study today?", "ai");
     });
   }
+  // 🔒 Logout button
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    if (confirm("آیا مطمئنی می‌خوای از حساب خارج بشی؟")) {
+      localStorage.removeItem("mmdrzaUser"); // پاک کردن کاربر
+      addMessage("👋 Logged out successfully!", "ai");
+      setTimeout(() => {
+        window.location.href = "index.html"; // برگشت به صفحه‌ی ورود
+      }, 1000);
+    }
+  });
+}
 
 });

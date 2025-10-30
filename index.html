@@ -143,41 +143,34 @@
 </div>
 </div>
 <script>
-document.getElementById("signupForm").addEventListener("submit", async e => {
+document.getElementById("signupForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const btn = e.target.querySelector("button");
-  btn.disabled = true;
-  btn.innerHTML = "🌠 Creating Account...";
 
   const username = document.getElementById("username").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  try {
-    const res = await fetch("/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert("⚠️ " + data.error);
-      btn.disabled = false;
-      btn.innerHTML = "Sign Up 🚀";
-      return;
-    }
-
-    btn.innerHTML = "✅ Success!";
-    setTimeout(() => window.location.href = "dashboard.html", 1000);
-  } catch (err) {
-    alert("⚠️ Server connection failed.");
-    btn.disabled = false;
-    btn.innerHTML = "Sign Up 🚀";
+  if (!username || !email || !password) {
+    alert("⚠️ لطفاً تمام فیلدها را پر کنید");
+    return;
   }
+
+  // ذخیره در localStorage
+  const userData = { username, email, password };
+  localStorage.setItem("mmdrzaUser", JSON.stringify(userData));
+
+  // صدای موفقیت و انتقال
+  const audio = new Audio("https://cdn.pixabay.com/download/audio/2023/02/06/audio_8f4211ef27.mp3?filename=interface-success-257554.mp3");
+  audio.volume = 0.5;
+  audio.play();
+
+  document.querySelector(".signup-card").style.opacity = "0.2";
+  setTimeout(() => {
+    window.location.href = "dashboard.html"; // یا app.html
+  }, 800);
 });
 </script>
+
 
 
 </body>

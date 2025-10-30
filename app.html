@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  const user = JSON.parse(localStorage.getItem("mmdrzaUser"));
+  if (!user) {
+    alert("🚫 ابتدا باید وارد حساب خود شوید!");
+    window.location.href = "index.html";
+  } else {
+    console.log("✅ Logged in as:", user.username);
+  }
+</script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>mmdrza.AI — Chat</title>
@@ -28,6 +38,13 @@
     <div class="container-fluid d-flex justify-content-between">
       <a class="navbar-brand" href="#"><i class="bi bi-stars me-2"></i>mmdrza.AI</a>
       <button id="settingsBtn" class="btn btn-outline-info btn-sm"><i class="bi bi-gear"></i></button>
+      <button id="logoutBtn" class="btn btn-danger btn-sm ms-2">
+  <i class="bi bi-box-arrow-right"></i> Logout
+</button>
+<div id="userWelcome" class="text-end pe-3 fw-semibold" style="color:#00ffff;">
+  👋 Welcome, Guest
+</div>
+
     </div>
   </nav>
 
