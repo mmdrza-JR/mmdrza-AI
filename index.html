@@ -3,22 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mmdrza-AI</title>
+  <title>mmdrza.AI — Sign Up</title>
 
-  <!-- Bootstrap CSS -->
+  <!-- 🌐 Bootstrap (سبک با JS تأخیری) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-  <!-- Animate.css -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-  <!-- Google Font -->
+  <!-- 🎨 فونت -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
-
-  <!-- TypeIt.js -->
-  <script src="https://cdn.jsdelivr.net/npm/typeit@8.7.1/dist/index.umd.js"></script>
 
   <style>
     body {
@@ -28,19 +19,15 @@
       height: 100vh;
       overflow: hidden;
       color: white;
+      background: radial-gradient(circle at top left, #00111a, #000428, #002a4e);
     }
 
-    /* Background Particles */
     #particles-js {
       position: absolute;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at top left, #00111a, #000428, #002a4e);
       z-index: 0;
     }
- 
-
-
 
     .signup-container {
       position: relative;
@@ -49,98 +36,64 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      transition: all 0.5s ease;
     }
 
     .signup-card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 25px;
-      backdrop-filter: blur(25px);
-      box-shadow: 0 0 50px rgba(255, 255, 255, 0.15);
-      padding: 3rem 3rem;
-      width: 420px;
-      animation: floatIn 1.5s ease forwards;
-       transition: opacity 0.8s ease;
-
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+      padding: 2.5rem;
+      width: 370px;
+      animation: fadeUp 1s ease forwards;
     }
 
-    @keyframes floatIn {
-      from { transform: translateY(100px); opacity: 0; }
+    @keyframes fadeUp {
+      from { transform: translateY(50px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
     h2 {
       text-align: center;
       font-weight: 800;
-      font-size: 1.8rem;
-      letter-spacing: 1.5px;
-      margin-bottom: 1.5rem;
-      text-shadow: 0 0 15px #ff00ff, 0 0 30px #ff8c00;
+      font-size: 1.7rem;
       color: #fff;
-      animation: neonGlow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes neonGlow {
-      from {
-        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff8c00, 0 0 40px #ff00ff;
-      }
-      to {
-        text-shadow: 0 0 25px #ff8c00, 0 0 50px #ff00ff, 0 0 80px #ff8c00;
-      }
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 12px #ff0080, 0 0 25px #ff8c00;
     }
 
     .form-control {
       background: transparent;
       border: none;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      border-bottom: 2px solid rgba(255,255,255,0.3);
       color: white;
       transition: all 0.3s ease;
     }
-
     .form-control:focus {
       border-color: #ff8c00;
       box-shadow: none;
-      background: rgba(255, 255, 255, 0.1);
     }
 
     .btn-glow {
-      background: linear-gradient(90deg, #ff0080, #ff8c00);
+      background: linear-gradient(90deg,#ff0080,#ff8c00);
       border: none;
       color: white;
       width: 100%;
-      padding: 0.8rem;
-      border-radius: 50px;
+      padding: 0.7rem;
+      border-radius: 40px;
       font-weight: 600;
-      transition: all 0.3s ease;
+      transition: 0.3s ease;
       box-shadow: 0 0 15px #ff8c00;
     }
-
-    .btn-glow:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px #ff0080, 0 0 35px #ff8c00;
-    }
-
-    .social-btn {
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.2);
-      transition: 0.3s;
-    }
-
-    .social-btn:hover {
-      background: linear-gradient(90deg, #ff0080, #ff8c00);
-      transform: rotate(10deg) scale(1.1);
-    }
+    .btn-glow:hover { transform: scale(1.05); }
 
     .footer-text {
       text-align: center;
-      margin-top: 1.5rem;
+      margin-top: 1.3rem;
       color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
     }
-
     .footer-text a {
       color: #ff8c00;
       text-decoration: none;
@@ -149,134 +102,56 @@
   </style>
 </head>
 <body>
-  <!-- Particle Background -->
   <div id="particles-js"></div>
 
   <div class="signup-container">
-    <div class="signup-card animate__animated animate__fadeInUp">
-      <h2 id="typingTitle"></h2>
-    <form id="signupForm">
-  <div class="mb-3">
-    <label for="username" class="form-label">Username</label>
-    <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
-  </div>
+    <div class="signup-card">
+      <h2>Join <span style="color:#ff0080;">Super</span><span style="color:#ff8c00;">Stars 🌟</span></h2>
 
-  <div class="mb-3">
-    <label for="email" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-  </div>
+      <form id="signupForm">
+        <div class="mb-3">
+          <input type="text" class="form-control" id="username" placeholder="Username" required>
+        </div>
+        <div class="mb-3">
+          <input type="email" class="form-control" id="email" placeholder="Email" required>
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-glow mt-3">Sign Up 🚀</button>
+      </form>
 
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="Create a password" required>
-  </div>
-
-  <button type="submit" class="btn btn-glow mt-3">Sign Up 🚀</button>
-
-  <div class="text-center mt-4">
-    <span>or sign up with</span>
-    <div class="d-flex justify-content-center gap-3 mt-3">
-      <a href="#" class="social-btn"><i class="bi bi-google"></i></a>
-      <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
-      <a href="#" class="social-btn"><i class="bi bi-twitter"></i></a>
+      <div class="footer-text">
+        Already have an account? <a href="#">Login here</a>
+      </div>
     </div>
   </div>
-
-  <div class="footer-text">
-    Already have an account? <a href="#">Login here</a>
-  </div>
-</form>
-
-<!-- پیام خوش آمد (در ابتدا مخفی است) -->
-<div id="welcomeMessage" class="text-center mt-5" style="display:none;">
-  <h2 class="animate__animated animate__zoomIn" 
-      style="font-weight:800;font-size:2rem;text-shadow:0 0 25px #ff00ff,0 0 45px #ff8c00;">
-      🌟 Welcome to Super Stars 🌟
-  </h2>
-  <p style="opacity:0.8;margin-top:1rem;">Your journey to greatness begins now.</p>
-</div>
-
-    </div>
-  </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Particles.js -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
   <script>
-    /* Particle Background */
+    // 🌌 Background
     particlesJS("particles-js", {
-      "particles": {
-        "number": { "value": 90, "density": { "enable": true, "value_area": 800 } },
-        "color": { "value": ["#ff0080", "#ff8c00", "#ffffff"] },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 0.6 },
-        "size": { "value": 3 },
-        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.3, "width": 1 },
-        "move": { "enable": true, "speed": 2, "direction": "none", "out_mode": "bounce" }
+      particles: {
+        number: { value: 60, density: { enable: true, value_area: 700 } },
+        color: { value: ["#ff0080","#ff8c00","#ffffff"] },
+        size: { value: 3 },
+        opacity: { value: 0.6 },
+        move: { enable: true, speed: 1.2 },
+        line_linked: { enable: true, distance: 140, color: "#ffffff", opacity: 0.2, width: 1 }
       },
-      "interactivity": {
-        "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
-        "modes": { "grab": { "distance": 200, "line_linked": { "opacity": 0.6 } } }
-      },
-      "retina_detect": true
+      retina_detect: true
     });
 
-    /* Typewriter Effect */
-    new TypeIt("#typingTitle", {
-      speed: 100,
-      waitUntilVisible: true,
-      loop: false
-    })
-    .type("Join the ")
-    .pause(200)
-    .type("<span style='color:#ff0080;'>Super</span> ")
-    .pause(150)
-    .type("<span style='color:#ff8c00;'>Stars 🌟</span>")
-    .go();
+    // 🚀 Form submit animation
+    document.getElementById("signupForm").addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const card = document.querySelector(".signup-card");
+      card.style.opacity = "0";
+      const audio = new Audio("https://cdn.pixabay.com/download/audio/2023/02/06/audio_8f4211ef27.mp3?filename=interface-success-257554.mp3");
+      audio.volume = 0.4; audio.play();
+      setTimeout(()=> window.location.href="dashboard.html", 700);
+    });
   </script>
-  <script>
-  // افکت ارسال فرم
-  const form = document.getElementById('signupForm');
-  const welcome = document.getElementById('welcomeMessage');
-  const card = document.querySelector('.signup-card');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    // انیمیشن خروج فرم
-    card.classList.add('animate__fadeOutDown');
-    card.style.animationDuration = '1s';
-
-    // پخش صدا
-    const audio = new Audio('https://cdn.pixabay.com/download/audio/2023/02/06/audio_8f4211ef27.mp3?filename=interface-success-257554.mp3');
-    audio.volume = 0.5;
-    audio.play();
-
-    // افکت جشن ذرات
-    particlesJS("particles-js", {
-      "particles": {
-        "number": { "value": 150 },
-        "color": { "value": ["#ff0080", "#ff8c00", "#00ffcc"] },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 0.8 },
-        "size": { "value": 4 },
-        "move": { "enable": true, "speed": 3 }
-      }
-    });
-
-    // بعد از ۱ ثانیه پیام خوش آمد نشون بده
-    setTimeout(() => {
-          window.location.href = "dashboard.html";
-      card.style.display = 'none';
-      welcome.style.display = 'block';
-      welcome.classList.add('animate__fadeInUp');
-    }, 1000);
-  });
-</script>
 </body>
-
-
 </html>
