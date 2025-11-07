@@ -111,8 +111,105 @@
   0%  { transform: scale(0.9); opacity:.9; }
   100%{ transform: scale(1.25); opacity:0; }
 }
+/* =========================
+   Lite / Mobile Performance
+   ========================= */
+
+/* 2.1 عمومی: در حالت lite انیمیشن‌ها و فیلترهای سنگین خاموش */
+.lite *, .lite *::before, .lite *::after {
+  animation: none !important;
+  transition: none !important;
+  filter: none !important;
+  will-change: auto !important;
+}
+
+/* 2.2 پس‌زمینه‌های سنگین را ساده کن */
+@media (max-width: 576px), (prefers-reduced-motion: reduce) {
+  body {
+    background: #0b0f1a !important;
+    min-height: 100dvh; /* از 100vh قدیمی دقیق‌تره */
+  }
+  body::before { display: none !important; } /* اسکن لاین */
+}
+
+/* 2.3 گرید و ارتفاع‌ها */
+.app {
+  grid-template-columns: 1fr;  /* سایدبار حذف؛ فقط محتوا */
+}
+.sidebar {
+  display: none !important;
+}
+.content {
+  min-height: auto !important;
+}
+
+/* 2.4 تاپ‌بار و بک‌دراپ فیلتر (خیلی سنگینه) */
+.topbar {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(12,16,28,.95) !important;
+}
+
+/* 2.5 کارت‌ها: سایه و حاشیه سبک‌تر */
+.n-card {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(123,129,162,.18) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,.45) !important;
+}
+.n-glow::after { display: none !important; } /* حلقه‌ی نوری چرخان */
+
+/* 2.6 دیوایدر و افکت‌های نئونی سنگین */
+.neon-divider {
+  background: rgba(138,160,197,.25) !important;
+}
+
+/* 2.7 مودال/Backdrops سبک‌تر */
+.modal-backdrop.show {
+  background: rgba(8,12,22,.35) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2.8 Bottom-sheet انیمیشن ساده‌تر */
+.modal-bottom .modal-dialog {
+  transform: translate(-50%, -50%) scale(1) !important;
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+/* 2.9 Footer و فاصله‌ها در موبایل */
+@media (max-width: 576px) {
+  main.container { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+  footer { font-size: .85rem; opacity: .85; }
+}
+
+/* 2.10 Warp Overlay بسیار سبک یا غیرفعال */
+.lite #warpOverlay { display: none !important; }
+#warpOverlay {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+}
 
   </style>
+  <script>
+  (function () {
+    const dm = navigator.deviceMemory || 0;                  // RAM تخمینی
+    const hc = navigator.hardwareConcurrency || 0;           // هسته CPU
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSmall = matchMedia('(max-width: 576px)').matches;
+
+    const lowEnd = (dm && dm <= 3) || (hc && hc <= 4) || reduce || isSmall;
+    const saved = localStorage.getItem('mmd_lite');
+
+    // اگر کاربر قبلاً دستی خاموش نکرده، به‌طور خودکار روشن کن
+    if (saved !== 'off' && lowEnd) {
+      document.documentElement.classList.add('lite');
+      localStorage.setItem('mmd_lite', 'on');
+    }
+  })();
+</script>
+
 </head>
 <body>
   <div class="app">
@@ -366,20 +463,32 @@
       const toastEl = byId('dashToast');
       const showToast = (msg, delay = 1600) => { if (!toastEl) return; const b = toastEl.querySelector('.toast-body'); if (b) b.textContent = msg; new bootstrap.Toast(toastEl, { delay }).show(); };
 // === Open Chat with warp + localStorage sync ===
-const goChat = () => {
-  // اگر mmdrzaUser نبود، از mm_user_name بساز
-  if (!localStorage.getItem('mmdrzaUser')) {
-    const uname = (localStorage.getItem('mm_user_name') || 'Guest').trim() || 'Guest';
-    localStorage.setItem('mmdrzaUser', JSON.stringify({ username: uname, email: '' }));
-  }
-  const overlay = document.getElementById('warpOverlay');
-  if (overlay){
-    overlay.classList.remove('d-none');
-    requestAnimationFrame(()=> overlay.classList.add('show'));
-  }
-  setTimeout(()=> { window.location.href = 'app.html'; }, 700);
-};
+ const goChat = () => {
+    if (!localStorage.getItem('mmdrzaUser')) {
+      const uname = (localStorage.getItem('mm_user_name') || 'Guest').trim() || 'Guest';
+      localStorage.setItem('mmdrzaUser', JSON.stringify({ username: uname, email: '' }));
+    }
 
+    const lite = document.documentElement.classList.contains('lite');
+    const overlay = document.getElementById('warpOverlay');
+
+    if (lite) {
+      // مستقیم برو، بدون افکت
+      window.location.href = 'app.html';
+      return;
+    }
+
+    // غیر-lite: انیمیشن مختصر
+    if (overlay){
+      overlay.classList.remove('d-none');
+      requestAnimationFrame(()=> overlay.classList.add('show'));
+    }
+    setTimeout(()=> { window.location.href = 'app.html'; }, 500);
+  };
+
+  // بایندها مثل قبل
+  document.getElementById('openChatBtn')?.addEventListener('click', goChat);
+  document.getElementById('qaOpenChat')?.addEventListener('click', goChat);
 // Bind to buttons
 document.getElementById('openChatBtn')?.addEventListener('click', goChat);
 document.getElementById('qaOpenChat')?.addEventListener('click', goChat);
