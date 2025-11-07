@@ -1,149 +1,441 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mmdrza.AI — Galaxy Mode</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dashboard - mmdrza.AI</title>
 
-  <!-- Bootstrap سبک -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- فونت -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      color: white;
-      background: radial-gradient(circle at top, #000015, #000428, #001f4d);
-    }
+    :root{ --bg-1:#0b0f1a; --bg-2:#0f172a; --neon:#00eaff; --neon-2:#7a5cff; --accent:#18ffb6; --text:#d8e9ff; --muted:#8aa0c5; }
 
-    #particles-js {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
+    body{ min-height:100vh; margin:0; color:var(--text);
+      background:
+        radial-gradient(1000px 520px at 85% -10%, rgba(122,92,255,.14), transparent 60%),
+        radial-gradient(800px 460px at -10% 110%, rgba(0,234,255,.14), transparent 60%),
+        linear-gradient(180deg, #070b14 0%, #0b0f1a 40%, #0f172a 100%);
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; overflow-x:hidden; }
 
-    .galaxy {
-      position: relative;
-      z-index: 2;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      transition: opacity 1s ease;
-    }
+    body::before{ content:""; position:fixed; inset:0; pointer-events:none;
+      background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0 2px, rgba(255,255,255,0.00) 2px 4px);
+      mix-blend-mode:overlay; animation: scan 12s linear infinite; }
+    @keyframes scan{0%{transform:translateY(-10%)}100%{transform:translateY(10%)}}
 
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      background: linear-gradient(90deg, #ff00ff, #ff8c00, #00ffff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px #ff00ff, 0 0 50px #00ffff;
-      animation: glow 2.5s ease-in-out infinite alternate;
-    }
+    /* Layout */
+    .app{ display:grid; grid-template-columns: 260px 1fr; gap:0; }
+    .sidebar{ position:sticky; top:0; height:100vh; padding:1rem; overflow:auto;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-inline-end:1px solid rgba(138,160,197,.25); }
+    .brand{ font-family:'Orbitron', system-ui; letter-spacing:.06em; text-shadow:0 0 8px rgba(0,234,255,.45); }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 20px #ff00ff; }
-      to { text-shadow: 0 0 60px #00ffff; }
-    }
+    .side-link{ display:flex; align-items:center; gap:.6rem; padding:.6rem .8rem; border-radius:12px; color:var(--text);
+      text-decoration:none; transition:transform .15s ease, background .15s ease; }
+    .side-link:hover{ transform: translateX(2px); background:rgba(0,234,255,.08); }
+    .side-link.active{ background:rgba(122,92,255,.14); border:1px solid rgba(122,92,255,.25); }
 
-    .sub {
-      opacity: 0.8;
-      margin-top: 1rem;
-      font-size: 1rem;
-      color: rgba(255,255,255,0.7);
-    }
+    .content{ min-height:100vh; }
+    .topbar{ position:sticky; top:0; z-index:10; backdrop-filter: blur(8px) saturate(120%);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-bottom: 1px solid rgba(138,160,197,.25); }
 
-    .core {
-      margin-top: 2rem;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #00ffff 0%, transparent 70%);
-      box-shadow: 0 0 70px 15px rgba(0,255,255,0.5);
-      animation: pulse 3s ease-in-out infinite alternate;
-    }
+    .n-card{ background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(123,129,162,.25); border-radius:20px; color:var(--text);
+      box-shadow:0 10px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(122,92,255,.12) inset, 0 0 24px rgba(0,234,255,.05) inset; }
+    .n-card .title{ font-weight:700; letter-spacing:.3px; }
+    .n-glow{ position:relative; }
+    .n-glow::after{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px;
+      background: conic-gradient(from 0deg, transparent 10%, rgba(0,234,255,.5) 20%, transparent 30%, transparent 45%, rgba(122,92,255,.5) 55%, transparent 65%, transparent 80%, rgba(24,255,182,.5) 90%, transparent 100%);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation: spin 10s linear infinite; pointer-events:none; opacity:.7; }
+    @keyframes spin{ to { transform: rotate(1turn); } }
 
-    @keyframes pulse {
-      from { box-shadow: 0 0 40px 10px rgba(0,255,255,0.3); }
-      to { box-shadow: 0 0 100px 25px rgba(0,255,255,0.8); }
-    }
+    .metric{ font-size:1.8rem; font-weight:800; }
+    .muted{ color:var(--muted); }
+    .neon-divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(0,234,255,.7), rgba(122,92,255,.6), transparent); }
+    a, .link{ color:#bfeaff; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
 
-    .enter {
-      background: linear-gradient(90deg, #ff0080, #ff8c00);
-      border: none;
-      padding: 0.8rem 2rem;
-      border-radius: 40px;
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      margin-top: 2rem;
-      box-shadow: 0 0 20px #ff8c00;
-      transition: all 0.3s ease;
-      opacity: 0;
+    /* Mobile */
+    @media (max-width: 992px){ .app{ grid-template-columns: 1fr; } .sidebar{ display:none; } }
+    @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; } }
+
+    /* Buttons */
+    .btn-neon{ --bs-btn-color:#0b0f1a; --bs-btn-bg:var(--neon); --bs-btn-border-color:var(--neon);
+      --bs-btn-hover-bg:#7af2ff; --bs-btn-hover-border-color:#7af2ff; position:relative; overflow:hidden; }
+    .btn-neon::after{ content:""; position:absolute; inset:-2px; border-radius:inherit; box-shadow:0 0 24px rgba(0,234,255,.7),0 0 60px rgba(122,92,255,.5); opacity:.65; filter:blur(6px); pointer-events:none; }
+
+    /* Bottom Sheet (centered fade-in, lightweight) */
+    .modal-bottom .modal-dialog{
+      position: fixed; top:50%; left:50%; transform: translate(-50%, -50%) scale(.92);
+      width: min(480px, 90vw); margin:0; opacity:0; transition: transform .28s ease, opacity .28s ease;
     }
-    .enter:hover { transform: scale(1.05); }
+    .modal-bottom.show .modal-dialog{ transform: translate(-50%, -50%) scale(1); opacity:1; }
+    .modal-bottom .modal-content{ border-radius:16px; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); border:1px solid rgba(123,129,162,.25); box-shadow:0 0 40px rgba(0,0,0,.55), 0 0 0 1px rgba(122,92,255,.12) inset; }
+    .sheet-icon{ font-size:1.6rem; margin-inline-end:.5rem; color: var(--neon); }
+
+    /* Lightweight blurred backdrop for any modal */
+    .modal-backdrop.show{ background: rgba(8,12,22,.35); }
+    @supports ((-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px))){
+      .modal-backdrop.show{ background: rgba(8,12,22,.28); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+      @media (max-width: 576px){ .modal-backdrop.show{ -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); } }
+    }
+    /* --- Warp overlay (super lightweight) --- */
+.warp{
+  position:fixed; inset:0; z-index:1055; 
+  display:grid; place-items:center; 
+  background: radial-gradient(1200px 600px at 50% -20%, rgba(122,92,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 50% 120%, rgba(0,234,255,.18), transparent 60%),
+              rgba(2,6,18,.85);
+  opacity:0; pointer-events:none; transition:opacity .28s ease;
+  backdrop-filter: blur(4px);
+}
+.warp.show{ opacity:1; pointer-events:auto; }
+.warp-core{
+  width:120px; height:120px; border-radius:50%;
+  background: radial-gradient(circle, rgba(0,234,255,.9) 0%, rgba(0,234,255,.25) 55%, transparent 60%);
+  box-shadow: 0 0 40px rgba(0,234,255,.6), 0 0 80px rgba(122,92,255,.35);
+  animation: warpPulse 1.4s ease-in-out infinite alternate;
+}
+.warp-ring{
+  position:absolute; width:180px; height:180px; border-radius:50%;
+  border:1px solid rgba(0,234,255,.45);
+  box-shadow: 0 0 24px rgba(122,92,255,.35) inset;
+  animation: warpRing .7s ease-out infinite;
+}
+@keyframes warpPulse{
+  from{ transform: scale(.9); filter: saturate(120%); }
+  to{   transform: scale(1.08); filter: saturate(160%); }
+}
+@keyframes warpRing{
+  0%  { transform: scale(0.9); opacity:.9; }
+  100%{ transform: scale(1.25); opacity:0; }
+}
+
   </style>
 </head>
 <body>
-  <div id="particles-js"></div>
+  <div class="app">
+    <!-- Sidebar (desktop) -->
+    <aside class="sidebar">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="brand fw-bold">mmdrza · AI</div>
+        <button class="btn btn-sm btn-outline-info d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav"><i class="bi bi-list"></i></button>
+      </div>
+      <nav class="d-flex flex-column gap-1">
+        <a class="side-link active" href="#"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        <a class="side-link" id="navTokens" href="#"><i class="bi bi-lightning-charge"></i><span>Tokens</span></a>
+        <a class="side-link" id="navProjects" href="#"><i class="bi bi-folder2"></i><span>Projects</span></a>
+        <a class="side-link" id="navActivity" href="#"><i class="bi bi-activity"></i><span>Activity</span></a>
+        <a class="side-link" href="#" id="openSettingsSide"><i class="bi bi-gear"></i><span>Settings</span></a>
+      </nav>
+    </aside>
 
-  <div class="galaxy" id="galaxy">
-    <h1>🚀 Entering <span style="color:#ff0080;">mmdrza</span>.<span style="color:#00ffff;">AI</span></h1>
-    <p class="sub">Quantum AI Systems Booting...</p>
-    <div class="core"></div>
-    <button id="enterBtn" class="enter">Enter the Universe 🌌</button>
+    <!-- Content -->
+    <section class="content">
+      <nav class="topbar navbar navbar-dark">
+        <div class="container-fluid py-2 px-3">
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-info d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav"><i class="bi bi-list"></i></button>
+            <span class="navbar-brand brand fw-bold d-none d-lg-inline">mmdrza · AI</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span id="welcome" class="small text-light-emphasis"></span>
+            <button id="openChatBtn" class="btn btn-sm btn-warning">
+  <i class="bi bi-chat-dots me-1"></i> Chat AI
+</button>
+
+            <button id="newPromptBtn" class="btn btn-sm btn-neon"><i class="bi bi-stars me-1"></i>New Prompt</button>
+            <button id="uploadBtn" class="btn btn-sm btn-outline-info"><i class="bi bi-upload me-1"></i>Upload Data</button>
+            <button id="settingsBtn" class="btn btn-sm btn-outline-light"><i class="bi bi-gear me-1"></i>Settings</button>
+            <button id="logoutBtn" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+          </div>
+        </div>
+      </nav>
+
+      <main class="container py-4 py-md-5">
+        <div class="row g-3 g-md-4 align-items-stretch">
+          <div class="col-12 col-md-4">
+            <div class="n-card n-glow h-100 p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="title">Daily Tokens</div>
+                <i class="bi bi-lightning-charge"></i>
+              </div>
+              <div class="metric" id="tokensMetric">1,200</div>
+              <div class="muted">Usage today</div>
+              <div class="neon-divider my-3"></div>
+              <button class="btn btn-neon btn-sm" id="upgradeBtn">Upgrade</button>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="n-card n-glow h-100 p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="title">Projects</div>
+                <i class="bi bi-folder2"></i>
+              </div>
+              <div class="metric" id="projectsMetric">7</div>
+              <div class="muted">Active this week</div>
+              <div class="neon-divider my-3"></div>
+              <a href="#" class="link">Open workspace →</a>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="n-card n-glow h-100 p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="title">Latency</div>
+                <i class="bi bi-speedometer2"></i>
+              </div>
+              <div class="metric" id="latencyMetric">68 ms</div>
+              <div class="muted">Avg response</div>
+              <div class="neon-divider my-3"></div>
+              <span class="muted small">Optimized mode</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 g-md-4 mt-1">
+          <div class="col-12 col-lg-8">
+            <div class="n-card n-glow p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="title">Recent Activity</div>
+                <i class="bi bi-activity"></i>
+              </div>
+              <ul id="activityList" class="list-group list-group-flush">
+                <li class="list-group-item bg-transparent text-light border-secondary">Generated summary for Physics Ch.4</li>
+                <li class="list-group-item bg-transparent text-light border-secondary">Exported neon auth UI</li>
+                <li class="list-group-item bg-transparent text-light border-secondary">Synced datasets: 3 files</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="n-card n-glow p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="title">Quick Actions</div>
+                <i class="bi bi-magic"></i>
+              </div>
+              <div class="d-grid gap-2">
+<button class="btn btn-warning" id="qaOpenChat">
+  <i class="bi bi-chat-dots me-2"></i> Open Chat
+</button>
+                <button class="btn btn-neon" id="qaNewPrompt"><i class="bi bi-stars me-2"></i>New Prompt</button>
+                <button class="btn btn-outline-info" id="qaUpload"><i class="bi bi-upload me-2"></i>Upload Data</button>
+                <button class="btn btn-outline-light" id="qaSettings"><i class="bi bi-gear me-2"></i>Settings</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="neon-divider my-4"></div>
+        <footer class="text-center muted">created by mmdrza - EE/University of Tehran - 2025</footer>
+      </main>
+    </section>
   </div>
 
-  <!-- فقط پارتیکل -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <!-- Offcanvas Sidebar (mobile) -->
+  <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasNav" aria-labelledby="offcanvasNavLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title brand" id="offcanvasNavLabel">mmdrza · AI</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <nav class="d-flex flex-column gap-1">
+        <a class="side-link active" href="#"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        <a class="side-link" id="offTokens" href="#"><i class="bi bi-lightning-charge"></i><span>Tokens</span></a>
+        <a class="side-link" id="offProjects" href="#"><i class="bi bi-folder2"></i><span>Projects</span></a>
+        <a class="side-link" id="offActivity" href="#"><i class="bi bi-activity"></i><span>Activity</span></a>
+        <a class="side-link" href="#" id="openSettingsOffcanvas"><i class="bi bi-gear"></i><span>Settings</span></a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- New Prompt Modal -->
+  <div class="modal fade" id="promptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border border-secondary">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-stars me-2"></i>New Prompt</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <textarea id="promptText" class="form-control bg-black text-light border-secondary" rows="5" placeholder="Type your prompt..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="runPromptBtn" class="btn btn-neon">Run</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border border-secondary">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-gear me-2"></i>Settings</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Accent color</label>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-sm btn-outline-light color-pick" data-color="#00eaff">Cyan</button>
+              <button class="btn btn-sm btn-outline-light color-pick" data-color="#7a5cff">Violet</button>
+              <button class="btn btn-sm btn-outline-light color-pick" data-color="#18ffb6">Mint</button>
+              <button class="btn btn-sm btn-outline-light color-pick" data-color="#ff7ad9">Pink</button>
+            </div>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="motionSwitch">
+            <label class="form-check-label" for="motionSwitch">Reduce motion</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file input for Upload -->
+  <input type="file" id="hiddenUpload" class="d-none" multiple>
+
+  <!-- Toast -->
+  <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+    <div id="dashToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">Action completed ✨</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom sheets (centered) -->
+  <div class="modal fade modal-bottom" id="tokensSheet" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title"><i class="bi bi-lightning-charge-fill sheet-icon"></i>Tokens</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="m-0">🚧 Coming soon… lightweight usage graphs and purchase options.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade modal-bottom" id="projectsSheet" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title"><i class="bi bi-folder2-open sheet-icon"></i>Projects</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="m-0">🚧 Coming soon… project spaces, collaboration and versioning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade modal-bottom" id="activitySheet" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title"><i class="bi bi-activity sheet-icon"></i>Activity</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="m-0">🚧 Coming soon… detailed logs and filters.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Warp overlay -->
+<div id="warpOverlay" class="warp d-none">
+  <div class="warp-core"></div>
+  <div class="warp-ring"></div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // 🔹 پارتیکل‌های سبک‌تر
-    particlesJS("particles-js", {
-      particles: {
-        number: { value: 80 },
-        color: { value: ["#ff0080","#00ffff","#ff8c00"] },
-        size: { value: 2.5 },
-        opacity: { value: 0.6 },
-        move: { enable: true, speed: 1.2 },
-        line_linked: { enable: true, distance: 130, color: "#ffffff", opacity: 0.2, width: 1 }
-      },
-      retina_detect: true
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      // Toast helper
+      const byId = (id) => document.getElementById(id);
+      const toastEl = byId('dashToast');
+      const showToast = (msg, delay = 1600) => { if (!toastEl) return; const b = toastEl.querySelector('.toast-body'); if (b) b.textContent = msg; new bootstrap.Toast(toastEl, { delay }).show(); };
+// === Open Chat with warp + localStorage sync ===
+const goChat = () => {
+  // اگر mmdrzaUser نبود، از mm_user_name بساز
+  if (!localStorage.getItem('mmdrzaUser')) {
+    const uname = (localStorage.getItem('mm_user_name') || 'Guest').trim() || 'Guest';
+    localStorage.setItem('mmdrzaUser', JSON.stringify({ username: uname, email: '' }));
+  }
+  const overlay = document.getElementById('warpOverlay');
+  if (overlay){
+    overlay.classList.remove('d-none');
+    requestAnimationFrame(()=> overlay.classList.add('show'));
+  }
+  setTimeout(()=> { window.location.href = 'app.html'; }, 700);
+};
 
-    // 🎧 صدای راه‌اندازی و دکمه
-    const ambient = new Audio("https://cdn.pixabay.com/download/audio/2022/10/31/audio_4e6ff42042.mp3?filename=space-ambience-124842.mp3");
-    ambient.volume = 0.3;
-    ambient.loop = true;
-    ambient.play();
+// Bind to buttons
+document.getElementById('openChatBtn')?.addEventListener('click', goChat);
+document.getElementById('qaOpenChat')?.addEventListener('click', goChat);
 
-    // ✨ نمایش دکمه بعد از بوت
-    setTimeout(() => {
-      const btn = document.getElementById("enterBtn");
-      btn.style.opacity = 1;
-      btn.style.transition = "opacity 2s ease";
-    }, 4500);
+      // Greeting
+      const name = (localStorage.getItem('mm_user_name') || '').trim();
+      const welcome = byId('welcome'); if (welcome) welcome.textContent = name ? `Welcome, ${name} ✨` : 'Welcome ✨';
 
-    // 🚀 کلیک روی دکمه
-    document.getElementById("enterBtn").addEventListener("click", () => {
-      ambient.pause();
-      const warp = new Audio("https://cdn.pixabay.com/download/audio/2023/01/17/audio_8f50a9d91f.mp3?filename=sci-fi-warp-136126.mp3");
-      warp.volume = 0.6;
-      warp.play();
-      document.getElementById("galaxy").style.opacity = 0;
-      setTimeout(() => window.location.href = "app.html", 2000);
+      // Logout
+      const logoutBtn = byId('logoutBtn'); if (logoutBtn) logoutBtn.addEventListener('click', () => { try { localStorage.removeItem('mm_user_name'); } catch {} window.location.href = 'index.html'; });
+
+      // Modals
+      const promptModal = (() => { const el = byId('promptModal'); return el ? new bootstrap.Modal(el) : null; })();
+      const settingsModal = (() => { const el = byId('settingsModal'); return el ? new bootstrap.Modal(el) : null; })();
+
+      const openPrompt = () => { const area = byId('promptText'); if (area) area.value = ''; promptModal?.show(); };
+      byId('newPromptBtn')?.addEventListener('click', openPrompt);
+      byId('qaNewPrompt')?.addEventListener('click', openPrompt);
+
+      const openSettings = () => settingsModal?.show();
+      byId('settingsBtn')?.addEventListener('click', openSettings);
+      byId('qaSettings')?.addEventListener('click', openSettings);
+      byId('openSettingsSide')?.addEventListener('click', (e) => { e.preventDefault(); openSettings(); });
+      byId('openSettingsOffcanvas')?.addEventListener('click', (e) => { e.preventDefault(); openSettings(); });
+
+      // Upload
+      const hiddenUpload = byId('hiddenUpload');
+      const triggerUpload = () => hiddenUpload?.click();
+      byId('uploadBtn')?.addEventListener('click', triggerUpload);
+      byId('qaUpload')?.addEventListener('click', triggerUpload);
+      hiddenUpload?.addEventListener('change', (e) => { const files = Array.from(e.target?.files || []).map(f => f.name); if (files.length) { const list = byId('activityList'); if (list) { const li = document.createElement('li'); li.className = 'list-group-item bg-transparent text-light border-secondary'; li.textContent = `Uploaded: ${files.slice(0,3).join(', ')}${files.length>3?` (+${files.length-3} more)`:''}`; list.prepend(li);} showToast('Upload complete ✅'); hiddenUpload.value = ''; }});
+
+      // Run prompt (mock)
+      byId('runPromptBtn')?.addEventListener('click', () => { const txt = (byId('promptText')?.value || '').trim(); if (!txt) { showToast('Please type a prompt'); return; } const list = byId('activityList'); if (list) { const li = document.createElement('li'); li.className = 'list-group-item bg-transparent text-light border-secondary'; li.textContent = `Prompt: ${txt.substring(0,80)}${txt.length>80?'…':''}`; list.prepend(li);} showToast('Prompt sent ✨'); promptModal?.hide(); });
+
+      // Settings
+      const applyAccent = (hex) => { document.documentElement.style.setProperty('--neon', hex); try { localStorage.setItem('mm_accent', hex); } catch {} showToast('Accent updated'); };
+      document.querySelectorAll('.color-pick').forEach(btn => btn.addEventListener('click', () => applyAccent(btn.dataset.color)));
+      const motionSwitch = byId('motionSwitch');
+      const setReduced = (on) => { document.documentElement.style.setProperty('--reduced', on?'1':'0'); try { localStorage.setItem('mm_reduce_motion', on?'1':'0'); } catch {} showToast(on?'Motion reduced':'Motion normal'); };
+      motionSwitch?.addEventListener('change', (e)=> setReduced(!!e.target.checked));
+      const savedAccent = localStorage.getItem('mm_accent'); if (savedAccent) document.documentElement.style.setProperty('--neon', savedAccent);
+      const savedMotion = localStorage.getItem('mm_reduce_motion')==='1'; if (motionSwitch) motionSwitch.checked = savedMotion;
+
+      // Upgrade mock
+      byId('upgradeBtn')?.addEventListener('click', ()=> showToast('Upgrade coming soon 🚧'));
+
+      // Bottom sheets (centered)
+      const sheet = (id) => { const el = byId(id); return el ? new bootstrap.Modal(el, { backdrop: true, keyboard: true }) : null; };
+      const sheets = { tokens: sheet('tokensSheet'), projects: sheet('projectsSheet'), activity: sheet('activitySheet') };
+      let hideTimer = null;
+      const autoShow = (m) => { if(!m) return; m.show(); if(hideTimer) clearTimeout(hideTimer); hideTimer = setTimeout(() => m.hide(), 2000); };
+      const bind = (elId, m) => { const el = byId(elId); if(el){ el.addEventListener('click', (e)=>{ e.preventDefault(); autoShow(m); }); } };
+      bind('navTokens', sheets.tokens); bind('navProjects', sheets.projects); bind('navActivity', sheets.activity);
+      bind('offTokens', sheets.tokens); bind('offProjects', sheets.projects); bind('offActivity', sheets.activity);
     });
   </script>
 </body>
-
 </html>

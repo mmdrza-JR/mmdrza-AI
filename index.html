@@ -1,398 +1,296 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sign up — mmdrza.AI</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sign up - mmdrza.AI</title>
 
-<!-- Inter font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
-<!-- Google Identity (force English) -->
-<script src="https://accounts.google.com/gsi/client?hl=en" async defer></script>
-<!-- reCAPTCHA v2 -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <style>
+    :root{
+      --bg-1:#0b0f1a; --bg-2:#0f172a;
+      --neon:#00eaff; --neon-2:#7a5cff; --accent:#18ffb6;
+      --text:#d8e9ff; --muted:#8aa0c5;
+    }
 
-<style>
-  :root{
-    --bg:#0b0f14;
-    --glass: rgba(255,255,255,0.04);
-    --glass-2: rgba(255,255,255,0.02);
-    --muted:#9aa4ad;
-    --text:#e8eef3;
-    --accent:#10a37f;
-    --accent-600:#0d8a6a;
-    --radius:14px;
-    --card-w:420px;
-    --glass-border: rgba(255,255,255,0.06);
-    --shadow: 0 10px 30px rgba(2,6,23,0.6);
-  }
+    /* ===== Page background (static look; no change on input focus) ===== */
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(122,92,255,.18), transparent 60%),
+        radial-gradient(900px 500px at 0% 100%, rgba(0,234,255,.18), transparent 60%),
+        linear-gradient(180deg, #070b14 0%, #0b0f1a 40%, #0f172a 100%);
+      color:var(--text);
+      display:grid; place-items:center; overflow-x:hidden;
+    }
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    background:
-      radial-gradient(900px 600px at 10% 10%, rgba(16,163,127,0.06), transparent 8%),
-      linear-gradient(180deg,#061018 0%, #0b0f14 100%);
-    color:var(--text);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:28px;
-  }
+    /* soft scan shimmer */
+    body::before{ content:""; position:fixed; inset:0;
+      background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0 2px, rgba(255,255,255,0.00) 2px 4px);
+      mix-blend-mode:overlay; pointer-events:none; animation: scan 12s linear infinite; }
+    @keyframes scan{0%{transform:translateY(-10%)}100%{transform:translateY(10%)}}
 
-  /* floating subtle decorative shapes */
-  .bg-blob{
-    position:fixed;
-    pointer-events:none;
-    filter: blur(48px) saturate(120%);
-    opacity:0.12;
-  }
-  .blob-a{width:420px;height:420px;background:linear-gradient(135deg,#07b68a,#00c2ff);left:6%;top:8%;border-radius:48%;}
-  .blob-b{width:360px;height:360px;background:linear-gradient(90deg,#ff6b7a,#ffb86b);right:6%;bottom:6%;border-radius:48%;opacity:0.08;transform:rotate(10deg)}
+    .particles{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .particles::before, .particles::after{
+      content:""; position:absolute; left:50%; top:50%; width:2px; height:2px; border-radius:50%;
+      box-shadow:0 -120px var(--neon), 120px 60px var(--neon-2), -180px -40px var(--accent), 200px -160px var(--neon), -260px 120px var(--neon-2), 280px 180px var(--accent), -320px 40px var(--neon), 360px -100px var(--neon-2), -420px -160px var(--accent), 440px 140px var(--neon);
+      filter:drop-shadow(0 0 6px currentColor); animation: drift 28s linear infinite; }
+    .particles::after{ animation-duration:36s; opacity:.6; filter:drop-shadow(0 0 10px currentColor) blur(.2px); }
+    @keyframes drift{ 0%{ transform: translate(-50%, -50%) rotate(0deg) } 100%{ transform: translate(-50%, -50%) rotate(360deg) } }
 
-  .card {
-    width: min(92%, var(--card-w));
-    border-radius:18px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    backdrop-filter: blur(10px) saturate(120%);
-    border:1px solid var(--glass-border);
-    box-shadow: var(--shadow);
-    padding:28px;
-    position:relative;
-    overflow:hidden;
-    transition:transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s;
-  }
-  .card:focus-within, .card:hover{transform:translateY(-6px); box-shadow: 0 20px 45px rgba(2,6,23,0.7);}
+    .auth-card{ width:min(92vw, 620px); position:relative;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(123,129,162,.25); border-radius:24px;
+      box-shadow:0 10px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(122,92,255,.15) inset, 0 0 40px rgba(0,234,255,.06) inset;
+      backdrop-filter: blur(10px) saturate(120%); overflow:hidden; }
 
-  .brand {
-    display:flex; gap:12px; align-items:center; margin-bottom:18px;
-  }
-  .logo {
-    width:44px; height:44px; border-radius:10px;
-    background:linear-gradient(135deg,#0ee6b8,#20b2ff);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:700;color:#042226; font-size:18px;
-    box-shadow: 0 6px 18px rgba(16,163,127,0.12), inset 0 -6px 18px rgba(255,255,255,0.04);
-  }
-  .brand h2 { margin:0; font-size:18px; font-weight:600; color:var(--text); }
-  .brand p { margin:0; font-size:13px; color:var(--muted); }
+    .auth-card::before{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px;
+      background: conic-gradient(from 0deg, transparent 10%, rgba(0,234,255,.6) 20%, transparent 30%, transparent 45%, rgba(122,92,255,.6) 55%, transparent 65%, transparent 80%, rgba(24,255,182,.6) 90%, transparent 100%);
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; animation: spin 10s linear infinite; pointer-events:none; }
+    @keyframes spin{ to { transform: rotate(1turn); } }
 
-  h1 { font-size:20px; margin:6px 0 16px; font-weight:600; color:var(--text); text-align:left; }
+    .brand{ font-family:'Orbitron', system-ui, sans-serif; letter-spacing:.06em;
+      text-shadow:0 0 10px rgba(0,234,255,.65), 0 0 22px rgba(122,92,255,.35); }
 
-  form { display:grid; gap:12px; }
+    /* ===== Inputs: keep background constant on focus ===== */
+    .form-control, .form-select{ background:rgba(3,8,20,.55)!important; color:var(--text); border:1px solid rgba(138,160,197,.25); }
+    .form-control::placeholder{ color:transparent; } /* Bootstrap floating-label requirement */
+    .form-control:focus, .form-select:focus{
+      background:rgba(3,8,20,.55)!important; /* no change */
+      border-color: rgba(138,160,197,.25);   /* no neon border */
+      box-shadow:none;                       /* no glow */
+      color:var(--text);
+    }
+    /* Let only the floating label animate up (Bootstrap default) */
+    .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label{ opacity:.85; transform:scale(.85) translateY(-.6rem) translateX(.15rem); }
 
-  label { font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
+    .btn-neon{ --bs-btn-color:#0b0f1a; --bs-btn-bg:var(--neon); --bs-btn-border-color:var(--neon); --bs-btn-hover-bg:#7af2ff; --bs-btn-hover-border-color:#7af2ff; position:relative; overflow:hidden; }
+    .btn-neon::after{ content:""; position:absolute; inset:-2px; border-radius:inherit; box-shadow:0 0 24px rgba(0,234,255,.7),0 0 60px rgba(122,92,255,.5); opacity:.65; filter:blur(6px); pointer-events:none; }
 
-  .field {
-    display:flex; flex-direction:column;
-  }
+    .neon-divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(0,234,255,.7), rgba(122,92,255,.6), transparent); }
+    .hint{ color:var(--muted); font-size:.9rem; }
 
-  input[type="text"],
-  input[type="email"],
-  input[type="password"]{
-    appearance:none;
-    background: linear-gradient(180deg,var(--glass),var(--glass-2));
-    border:1px solid rgba(255,255,255,0.04);
-    padding:12px 14px;
-    border-radius:10px;
-    color:var(--text);
-    font-size:15px;
-    outline:none;
-    transition:box-shadow .16s, border-color .16s, transform .12s;
-  }
-  input::placeholder{ color:rgba(230,238,243,0.35) }
-  input:focus{
-    box-shadow: 0 6px 20px rgba(16,163,127,0.12), inset 0 1px 0 rgba(255,255,255,0.02);
-    border-color: rgba(16,163,127,0.9);
-    transform:translateY(-1px);
-  }
-
-  .row { display:flex; gap:12px; }
-  .col { flex:1; }
-
-  .checkbox {
-    display:flex; gap:10px; align-items:center; color:var(--muted); font-size:14px;
-  }
-  .checkbox input{ width:18px; height:18px; accent-color:var(--accent); border-radius:4px; cursor:pointer;}
-
-  .pw-row{display:flex; gap:8px; align-items:center;}
-  .pw-toggle{ background:transparent; border:none; color:var(--muted); cursor:pointer; font-weight:600; font-size:13px; padding:8px; border-radius:8px; }
-  .pw-toggle:hover{ color:var(--text) }
-
-  /* password strength bar */
-  .strength {
-    height:8px; border-radius:6px; background: linear-gradient(90deg,#111 0%, rgba(255,255,255,0.02) 100%); overflow:hidden;
-  }
-  .strength > i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,#ff6b6b,#ffd36b,#56ffb6); transition:width .35s ease; }
-
-  .btn-primary{
-    width:100%; background: linear-gradient(90deg,var(--accent), #00c2a8); border:none; color:#02241f;
-    padding:12px; border-radius:10px; font-weight:700; font-size:15px; cursor:pointer;
-    box-shadow: 0 6px 18px rgba(16,163,127,0.12); transition:transform .14s, box-shadow .14s;
-  }
-  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 18px 40px rgba(16,163,127,0.14) }
-
-  .divider {
-    display:flex; align-items:center; gap:12px; color:var(--muted); font-size:13px; margin:10px 0;
-  }
-  .divider:before, .divider:after{
-    content:""; flex:1; height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-  }
-
-  /* Google button gets styled container but use GSI render */
-  #g_id_signup { width:100%; display:flex; justify-content:center; }
-
-  .footer { text-align:center; margin-top:12px; color:var(--muted); font-size:13px; }
-  .footer a{ color:var(--text); text-decoration:none; font-weight:600; opacity:0.9; }
-  .footer a:hover{ text-decoration:underline }
-
-  /* small text under title */
-  .hint{ color:var(--muted); font-size:13px; margin-top:-4px; margin-bottom:8px }
-
-  /* responsive */
-  @media (max-width:480px){
-    .card{ padding:18px; border-radius:14px }
-    .brand h2{ font-size:16px }
-    h1{ font-size:18px }
-  }
-</style>
+    footer{ color:var(--muted); font-size:.85rem; text-align:center; margin-top:1rem; }
+      /* ===== Mobile & performance tuning ===== */
+    @media (max-width: 576px){
+      .auth-card{ width:min(96vw, 520px); border-radius:20px; backdrop-filter:none; background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); box-shadow:0 8px 24px rgba(0,0,0,.5); }
+      body::before{ display:none; }
+      .particles{ display:none; }
+      .btn-lg{ padding-top:.8rem; padding-bottom:.8rem; font-size:1rem; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+    }
+  </style>
 </head>
 <body>
+  <div class="particles"></div>
 
-<!-- decorative blobs -->
-<div class="bg-blob blob-a"></div>
-<div class="bg-blob blob-b"></div>
-
-<main class="card" role="main" aria-labelledby="signup-title">
-  <header class="brand" aria-hidden="false">
-    <div class="logo">mA</div>
-    <div>
-      <h2>mmdrza.AI</h2>
-      <p style="margin-top:4px;color:var(--muted);font-size:13px">Create an account to access the assistant</p>
-    </div>
-  </header>
-
-  <h1 id="signup-title">Create your account</h1>
-  <div class="hint">Fast sign up — use email or continue with Google</div>
-
-  <form id="signupForm" autocomplete="on" novalidate>
-    <div class="field">
-      <label for="name">Full name</label>
-      <input id="name" name="name" type="text" placeholder="e.g. Mohammad Reza" required autocomplete="name" />
+  <main class="auth-card my-5 p-4 p-md-5">
+    <div class="text-center mb-4">
+      <h1 class="brand fw-bold mb-1">mmdrza-AI</h1>
+      <p class="text-secondary m-0">Use mmdrza AI for free at your homeworks</p>
     </div>
 
-    <div class="field">
-      <label for="email">Email address</label>
-      <input id="email" name="email" type="email" placeholder="name@example.com" required autocomplete="email" />
-    </div>
+    <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="authTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab" aria-controls="signup" aria-selected="true"><i class="bi bi-stars me-1"></i>Sign up</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="false"><i class="bi bi-box-arrow-in-right me-1"></i>Log in</button>
+      </li>
+    </ul>
 
-    <div class="field">
-      <label for="password">Password</label>
-      <div class="pw-row">
-        <input id="password" name="password" type="password" placeholder="Create a strong password" required autocomplete="new-password" style="flex:1;" />
-        <button type="button" class="pw-toggle" id="pwToggle" aria-pressed="false" title="Show password">Show</button>
-      </div>
+    <div class="neon-divider mb-4"></div>
 
-      <div style="margin-top:8px;display:flex;gap:10px;align-items:center;">
-        <div style="flex:1">
-          <div class="strength" aria-hidden="true"><i id="strengthBar"></i></div>
+    <div class="tab-content" id="authTabsContent">
+      <!-- ===== Sign Up ===== -->
+      <div class="tab-pane fade show active" id="signup" role="tabpanel" aria-labelledby="signup-tab" tabindex="0">
+        <form id="signupForm" class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="firstName" placeholder="First name" required autocomplete="given-name">
+                <label for="firstName">First name</label>
+                <div class="invalid-feedback">Please enter your first name.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="lastName" placeholder="Last name" required autocomplete="family-name">
+                <label for="lastName">Last name</label>
+                <div class="invalid-feedback">Please enter your last name.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="email" class="form-control" id="email" placeholder="name@example.com" required autocomplete="email">
+                <label for="email">Email</label>
+                <div class="invalid-feedback">Please provide a valid email.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="password" class="form-control" id="password" placeholder="Password" required minlength="8" autocomplete="new-password">
+                <label for="password">Password</label>
+                <div class="invalid-feedback">Minimum 8 characters required.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" required autocomplete="new-password">
+                <label for="confirmPassword">Confirm password</label>
+                <div class="invalid-feedback">Passwords must match.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="terms" required>
+                <label class="form-check-label" for="terms">I agree to the terms and privacy policy</label>
+                <div class="invalid-feedback">You must agree before submitting.</div>
+              </div>
+            </div>
+            <div class="col-12 d-grid">
+              <button class="btn btn-neon btn-lg" type="submit"><i class="bi bi-stars me-2"></i>Sign up</button>
+            </div>
+          </div>
+        </form>
+        <div class="text-center mt-4">
+          <div class="hint mb-2">Or sign up with</div>
+          <button class="btn btn-outline-light me-2"><i class="bi bi-github me-2"></i>GitHub</button>
+          <button class="btn btn-outline-light me-2"><i class="bi bi-google me-2"></i>Google</button>
+          <button class="btn btn-outline-light"><i class="bi bi-discord me-2"></i>Discord</button>
         </div>
-        <div style="min-width:68px;text-align:right;color:var(--muted);font-size:13px;" id="strengthText">—</div>
+      </div>
+
+      <!-- ===== Log In ===== -->
+      <div class="tab-pane fade" id="login" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
+        <form id="loginForm" class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required autocomplete="email">
+                <label for="loginEmail">Email</label>
+                <div class="invalid-feedback">Please enter a valid email.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="password" class="form-control" id="loginPassword" placeholder="Password" required autocomplete="current-password">
+                <label for="loginPassword">Password</label>
+                <div class="invalid-feedback">Password is required.</div>
+              </div>
+            </div>
+            <div class="col-12 d-flex justify-content-between align-items-center">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Remember me</label>
+              </div>
+              <a href="#" class="link-light link-underline-opacity-0 link-underline-opacity-50-hover">Forgot password?</a>
+            </div>
+            <div class="col-12 d-grid">
+              <button class="btn btn-neon btn-lg" type="submit"><i class="bi bi-box-arrow-in-right me-2"></i>Log in</button>
+            </div>
+          </div>
+        </form>
+        <div class="text-center mt-4">
+          <div class="hint mb-2">Or continue with</div>
+          <button class="btn btn-outline-light me-2"><i class="bi bi-github me-2"></i>GitHub</button>
+          <button class="btn btn-outline-light me-2"><i class="bi bi-google me-2"></i>Google</button>
+          <button class="btn btn-outline-light"><i class="bi bi-discord me-2"></i>Discord</button>
+        </div>
       </div>
     </div>
 
-    <div class="row" style="align-items:center;justify-content:space-between;">
-      <div class="checkbox">
-        <input type="checkbox" id="ageConfirm" name="ageConfirm" required />
-        <label for="ageConfirm">I am 18 or older</label>
+    <div class="neon-divider mt-4"></div>
+    <footer>created by mmdrza - EE/University of Tehran - 2025</footer>
+  </main>
+
+  <!-- Toasts -->
+  <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+    <div id="toastOK" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">Action completed successfully ✨</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
-      <div style="font-size:12px;color:var(--muted)">Terms apply</div>
     </div>
+  </div>
 
-    <!-- reCAPTCHA -->
-    <div style="margin-top:6px;margin-bottom:6px;">
-      <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY_HERE"></div>
-    </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Strict, robust JS wrapped after DOM is ready
+    document.addEventListener('DOMContentLoaded', function(){
+      // ===== Toast helper =====
+      const toastEl = document.getElementById('toastOK');
+      const showToast = (msg, delay=900) => {
+        if(!toastEl) return;
+        const body = toastEl.querySelector('.toast-body');
+        if(body) body.textContent = msg;
+        const t = new bootstrap.Toast(toastEl, { delay });
+        t.show();
+      };
 
-    <button class="btn-primary" id="continueBtn" type="submit">Continue</button>
-  </form>
+      // ===== Redirect helper =====
+      const goDashboard = () => { window.location.href = 'dashboard.html'; };
 
-  <div style="margin:14px 0" class="divider">or</div>
+      // ===== SIGN UP =====
+      const signupForm = document.getElementById('signupForm');
+      if (signupForm){
+        const pass = document.getElementById('password');
+        const confirm = document.getElementById('confirmPassword');
+        const firstName = document.getElementById('firstName');
 
-  <!-- Google button (GSI will render here) -->
-  <div id="g_id_signup"></div>
+        const match = () => {
+          if(confirm && pass){
+            confirm.setCustomValidity(confirm.value !== pass.value ? 'mismatch' : '');
+          }
+        };
+        if(pass && confirm){
+          pass.addEventListener('input', match);
+          confirm.addEventListener('input', match);
+          pass.addEventListener('change', match);
+          confirm.addEventListener('change', match);
+        }
 
-  <div class="footer">Already have an account? <a href="login.html">Log in</a></div>
-</main>
+        signupForm.addEventListener('submit', function(e){
+          match();
+          if(!signupForm.checkValidity()){
+            e.preventDefault();
+            e.stopPropagation();
+          } else {
+            e.preventDefault();
+            try{
+              if(firstName && firstName.value.trim()){
+                localStorage.setItem('mm_user_name', firstName.value.trim());
+              }
+            }catch(err){}
+            showToast('Registration successful. Welcome ✨', 900);
+            setTimeout(goDashboard, 950);
+          }
+          signupForm.classList.add('was-validated');
+        });
+      }
 
-<script>
-/* ---------- Replace these with your keys ----------
-   - CLIENT_ID: Google OAuth Client ID for Web (from cloud console)
-   - RECAPTCHA_SITE_KEY: reCAPTCHA v2 site key (add localhost if testing locally)
----------------------------------------------------*/
-const CLIENT_ID = "1082403809887-on2cbp8fi9eruoc0ujiftaahhn0kq0ae.apps.googleusercontent.com";
-const RECAPTCHA_SITE_KEY = "6LfFffwrAAAAAIf9uQxmkpDFzju0EkmxULQACc80";
-/* ------------------------------------------------- */
-
-/* Password toggle + strength */
-const pw = document.getElementById('password');
-const pwToggle = document.getElementById('pwToggle');
-const strengthBar = document.getElementById('strengthBar');
-const strengthText = document.getElementById('strengthText');
-
-pwToggle.addEventListener('click', () => {
-  const isHidden = pw.type === 'password';
-  pw.type = isHidden ? 'text' : 'password';
-  pwToggle.textContent = isHidden ? 'Hide' : 'Show';
-  pwToggle.setAttribute('aria-pressed', String(isHidden));
-});
-
-/* Simple password strength estimator (fast, client-side) */
-function assessPassword(p){
-  let score = 0;
-  if (!p) return {score:0,label:'—'};
-  if (p.length >= 8) score += 1;
-  if (p.length >= 12) score += 1;
-  if (/[A-Z]/.test(p)) score += 1;
-  if (/[0-9]/.test(p)) score += 1;
-  if (/[^A-Za-z0-9]/.test(p)) score += 1;
-  // score 0..5
-  let pct = Math.min(100, (score / 5) * 100);
-  let label = ['Very weak','Weak','Okay','Good','Strong','Very strong'][score];
-  return {score: Math.round(pct), label};
-}
-
-pw.addEventListener('input', () => {
-  const p = pw.value;
-  const r = assessPassword(p);
-  strengthBar.style.width = r.score + '%';
-  strengthText.textContent = r.label;
-  // color gradient by width
-  strengthBar.style.background = r.score < 40
-    ? 'linear-gradient(90deg,#ff6b6b,#ffb86b)'
-    : (r.score < 70 ? 'linear-gradient(90deg,#ffd36b,#56ffb6)' : 'linear-gradient(90deg,#56ffb6,#10a37f)');
-});
-
-/* Signup form handling (demo local flow) */
-const signupForm = document.getElementById('signupForm');
-signupForm.addEventListener('submit', (ev) => {
-  ev.preventDefault();
-
-  // Basic checks
-  const name = document.getElementById('name').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const password = pw.value;
-  const isAdult = document.getElementById('ageConfirm').checked;
-  // reCAPTCHA response field is filled by script, class g-recaptcha-response
-  const captchaResponseEl = document.querySelector('.g-recaptcha-response');
-  const captcha = captchaResponseEl ? captchaResponseEl.value : '';
-
-  if (!name || !email || !password || !isAdult) {
-    alert("⚠️ Please complete all required fields and confirm age.");
-    return;
-  }
-  if (!captcha) {
-    alert("⚠️ Please verify you are not a robot.");
-    return;
-  }
-
-  // Demo: store user locally (replace with secure server signup flow)
-  localStorage.setItem('mmdrzaUser', JSON.stringify({ name, email, password, provider: 'local' }));
-  // Friendly micro-feedback
-  continueBtnVisualFeedback();
-  setTimeout(()=> {
-    alert(`🎉 Welcome, ${name}!`);
-    window.location.href = 'dashboard.html';
-  }, 700);
-});
-
-function continueBtnVisualFeedback(){
-  const btn = document.getElementById('continueBtn');
-  btn.disabled = true;
-  btn.style.transform = 'translateY(-2px) scale(.998)';
-  btn.style.opacity = '0.92';
-  setTimeout(()=> { btn.disabled = false; btn.style.transform = ''; btn.style.opacity = ''; }, 1400);
-}
-
-/* ---------- Google Identity (GSI) init ----------
-   Renders official Google button and receives credential (ID token)
-   NOTE: replace CLIENT_ID constant above with your real client id
-----------------------------------------------------*/
-window.addEventListener('load', () => {
-  if (typeof google === 'undefined' || !google.accounts || !CLIENT_ID) {
-    // GSI not loaded or CLIENT_ID missing — render a fallback styled button
-    renderGoogleFallback();
-    return;
-  }
-
-  google.accounts.id.initialize({
-    client_id: CLIENT_ID,
-    callback: handleGoogleCredential
-  });
-
-  // render button into container (GSI will produce its own native button)
-  google.accounts.id.renderButton(
-    document.getElementById('g_id_signup'),
-    { theme: 'outline', size: 'large', width: '100%', locale: 'en' }
-  );
-
-  // Optionally prompt (commented out to avoid auto-popup)
-  // google.accounts.id.prompt();
-});
-
-/* Fallback styled button if GSI fails to load or client id missing */
-function renderGoogleFallback(){
-  const cont = document.getElementById('g_id_signup');
-  cont.innerHTML = '';
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'btn google-fallback';
-  b.style.cssText = "display:flex;align-items:center;justify-content:center;gap:10px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:#fff;color:#222;font-weight:600;width:100%";
-  b.innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style="width:18px;height:18px"/> Continue with Google`;
-  b.addEventListener('click', ()=> alert('Google Sign-In not configured. Set CLIENT_ID in the file.'));
-  cont.appendChild(b);
-}
-
-/* called by Google after successful signin (GSI) */
-function handleGoogleCredential(response){
-  if (!response || !response.credential) {
-    alert('Google sign-in failed.');
-    return;
-  }
-  const data = parseJwt(response.credential);
-  // Example of fields: name, email, picture, sub
-  localStorage.setItem('mmdrzaUser', JSON.stringify({
-    name: data.name || data.email,
-    email: data.email,
-    picture: data.picture || '',
-    provider: 'google'
-  }));
-  continueBtnVisualFeedback();
-  setTimeout(()=> {
-    alert(`✅ Signed up as ${data.name || data.email}`);
-    window.location.href = 'dashboard.html';
-  }, 700);
-}
-
-/* Simple JWT decode (no validation) */
-function parseJwt(token){
-  try{
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c=> '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    return JSON.parse(jsonPayload);
-  }catch(e){
-    return {};
-  }
-}
-
-/* Accessibility: allow Enter to toggle Google fallback if GSI present? keep native behavior. */
-/* End script */
-</script>
+      // ===== LOGIN =====
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm){
+        loginForm.addEventListener('submit', function(e){
+          if(!loginForm.checkValidity()){
+            e.preventDefault();
+            e.stopPropagation();
+          } else {
+            e.preventDefault();
+            showToast('Logged in successfully ✨', 900);
+            setTimeout(goDashboard, 950);
+          }
+          loginForm.classList.add('was-validated');
+        });
+      }
+    });
+  </script>
 </body>
 </html>
