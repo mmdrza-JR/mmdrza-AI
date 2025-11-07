@@ -693,3 +693,82 @@ html, body { overscroll-behavior-y: none; }
 /* وقتی Offcanvas بازه، لایه‌ها درست روی هم بنشینن */
 .offcanvas-backdrop { z-index: 1995 !important; }
 .offcanvas          { z-index: 2000 !important; }
+/* ===== Mobile-first ChatGPT-like layout (lite) ===== */
+
+/* ارتفاع‌های منطقی */
+:root{
+  --bars-h: 104px;       /* navbar + modelBar روی موبایل */
+  --input-h: 58px;       /* حداقل ارتفاع نوار تایپ */
+}
+
+/* نوارها چسبان و بالای محتوا */
+.navbar{ position: sticky; top: 0; z-index: 1031; }
+#modelBar{
+  position: sticky; top: 56px; z-index: 1030; /* زیرِ navbar */
+  background: rgba(0,0,20,.25);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+/* ظرف چت تمام‌قد و مقاوم در برابر کیبورد موبایل */
+.chat-container{
+  height: calc(var(--svh, 100dvh) - var(--bars-h));
+  min-height: 0;
+}
+
+/* ستون اصلی چت، اسکرول نرم فقط روی پیام‌ها */
+.chat-main{ display: flex; flex-direction: column; min-height: 0; }
+.chat-messages{
+  flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth;
+  padding: 1rem 1rem calc(var(--input-h) + 18px) 1rem; /* جا برای نوار تایپ */
+}
+
+/* نوار تایپ همیشه پایین، امن نسبت به ناچ/هوم‌بار */
+.chat-input{
+  position: sticky; bottom: env(safe-area-inset-bottom);
+  min-height: var(--input-h);
+  background: rgba(0,0,30,0.3);
+  backdrop-filter: blur(8px);
+  z-index: 1020;
+  border-top: 1px solid var(--border-color);
+}
+
+/* اسکرول‌پیل روی موبایل کمی بالاتر بیاد */
+.scroll-indicator{ bottom: calc(var(--input-h) + 32px); }
+
+/* سایدبار در موبایل حذف (قبلاً هم داشتی اما قطعی‌اش کنیم) */
+@media (max-width: 768px){
+  .sidebar{ display: none !important; }
+}
+
+/* فوتر در موبایل مزاحم نشه */
+@media (max-width: 576px){
+  .chat-footer{ display: none !important; }
+}
+
+/* تداخل منو همبرگری و ModelBar: وقتی offcanvas بازه، ModelBar خاموش */
+.drawer-open #modelBar{
+  opacity: 0; pointer-events: none; transition: opacity .18s ease;
+}
+
+/* لایه‌بندی صحیح درِاور و دراپ‌داون‌ها */
+.offcanvas,.offcanvas-backdrop{ z-index: 1051; }
+#modelBar .dropdown-menu{ z-index: 1049; }
+
+/* iOS سایز صحیح کل صفحه (svh) */
+@supports (height: 100svh){
+  .chat-container{ height: calc(100svh - var(--bars-h)); }
+}
+
+/* دکمه‌های بالا در موبایل کمی فشرده‌تر */
+@media (max-width: 576px){
+  .navbar .btn{ padding: .35rem .5rem; }
+  #modelBar .btn{ padding: .25rem .5rem; }
+}
+
+/* حاشیه‌امن اینپوت داخل آیفون‌های ناچ‌دار */
+.chat-input input{ padding-bottom: max(0px, env(safe-area-inset-bottom)); }
+
+/* پیام‌ها فضای افقی بیشتری داشته باشند */
+@media (max-width: 576px){
+  .msg-content{ max-width: 92%; }
+}
